@@ -11,6 +11,7 @@
     <property name="default_width">800</property>
     <property name="default_height">600</property>
     <property name="icon_name">SGI</property>
+    <signal name="destroy" handler="on_main_window_destroy" swapped="no"/>
     <child>
       <object class="GtkFixed" id="fixed1">
         <property name="visible">True</property>

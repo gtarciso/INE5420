@@ -130,16 +130,147 @@
               <object class="GtkFixed" id="fixed3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="label_line">
+                    <property name="width_request">100</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Initial point coordinates</property>
+                  </object>
+                  <packing>
+                    <property name="x">20</property>
+                    <property name="y">20</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_x1_line">
+                    <property name="name">25</property>
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">x1</property>
+                  </object>
+                  <packing>
+                    <property name="x">20</property>
+                    <property name="y">75</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_x1_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="width_chars">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">55</property>
+                    <property name="y">75</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_y1_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">y1</property>
+                  </object>
+                  <packing>
+                    <property name="x">110</property>
+                    <property name="y">75</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_y1_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="width_chars">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">145</property>
+                    <property name="y">75</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_line2">
+                    <property name="width_request">100</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Final point coordinates</property>
+                  </object>
+                  <packing>
+                    <property name="x">20</property>
+                    <property name="y">130</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_x2_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">x2</property>
+                  </object>
+                  <packing>
+                    <property name="x">20</property>
+                    <property name="y">185</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_x2_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="width_chars">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">55</property>
+                    <property name="y">185</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_y2_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">y2</property>
+                  </object>
+                  <packing>
+                    <property name="x">110</property>
+                    <property name="y">185</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_y2_line">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="width_chars">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">145</property>
+                    <property name="y">185</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="position">1</property>
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="label_page_line">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">page 2</property>
+                <property name="label" translatable="yes">Line</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -156,10 +287,10 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="label_page_spline">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">page 3</property>
+                <property name="label" translatable="yes">Spline</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -173,8 +304,8 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button1">
-            <property name="label" translatable="yes">button</property>
+          <object class="GtkButton" id="ok_button">
+            <property name="label" translatable="yes">OK</property>
             <property name="width_request">100</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -187,8 +318,8 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button2">
-            <property name="label" translatable="yes">button</property>
+          <object class="GtkButton" id="cancel_button">
+            <property name="label" translatable="yes">Cancel</property>
             <property name="width_request">100</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
