@@ -10,6 +10,7 @@ class MainWindow:
 	def __init__(self):
 		self.builder = None
 		self.object_list = None
+		self.object_id = 0
 
 	def run(self):
 		self.builder = Gtk.Builder()
@@ -26,6 +27,7 @@ class MainWindowHandler:
 	def __init__(self, main_window):
 		self.builder = main_window.builder
 		self.main_window = main_window
+		self.object_id = main_window.object_id
 
 	def new_object_button_clicked_cb(self, widget):
 		self.builder.add_from_file("../ui/new_object.glade")
@@ -49,5 +51,19 @@ class NewObjectHandler:
 	def on_window_new_object_destroy(self, object, data=None):
 		print("new object window closed")
 		self.object_window.destroy()
+
+	def on_cancel_button_clicked(self, widget):
+		print("action canceled")
+		self.object_window.destroy()
+
+	def on_ok_button_clicked(self, widget):
+		print("clicked")
+
+		object_name = self.builder.get_object("entry_name").get_text()
+		print(object_name)
+		self.main_window.object_id += 1
+		print(self.main_window.object_id)
+		current_page = self.builder.get_object("notebook_object").get_current_page()
+		print(current_page)
 
 
