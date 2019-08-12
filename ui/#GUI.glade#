@@ -11,6 +11,23 @@
       <!-- column-name object_type -->
       <column type="gchararray"/>
     </columns>
+    <data>
+      <row>
+        <col id="0">0</col>
+        <col id="1" translatable="yes"/>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0">0</col>
+        <col id="1" translatable="yes"/>
+        <col id="2" translatable="yes"/>
+      </row>
+      <row>
+        <col id="0">0</col>
+        <col id="1" translatable="yes"/>
+        <col id="2" translatable="yes"/>
+      </row>
+    </data>
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="width_request">800</property>
@@ -54,42 +71,6 @@
                 <property name="model">liststore1</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection" id="treeview-selection2"/>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="id-view-column">
-                    <property name="title" translatable="yes">Id</property>
-                    <property name="expand">True</property>
-                    <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="name-view-column">
-                    <property name="title" translatable="yes">Name</property>
-                    <property name="expand">True</property>
-                    <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="type-view-column">
-                    <property name="title" translatable="yes">Type</property>
-                    <property name="expand">True</property>
-                    <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">2</attribute>
-                      </attributes>
-                    </child>
-                  </object>
                 </child>
               </object>
             </child>

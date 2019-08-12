@@ -11,13 +11,16 @@ class MainWindow:
 		self.builder = None
 		self.object_list = None
 		self.object_id = 0
+		self.object_list = None
 
 	def run(self):
 		self.builder = Gtk.Builder()
 		self.builder.add_from_file("../ui/GUI.glade")
-		self.builder.connect_signals(MainWindowHandler(self))
 		self.window = self.builder.get_object("main_window")
-		self.object_list = self.builder.get_object("object_scrolled_window")
+		self.object_list = self.builder.get_object("liststore1")
+
+
+		self.builder.connect_signals(MainWindowHandler(self))
 		self.window.show_all()
 
 		Gtk.main()
@@ -27,6 +30,8 @@ class MainWindowHandler:
 	def __init__(self, main_window):
 		self.builder = main_window.builder
 		self.main_window = main_window
+		self.object_list = main_window.object_list
+
 		self.object_id = main_window.object_id
 
 	def new_object_button_clicked_cb(self, widget):
@@ -62,8 +67,18 @@ class NewObjectHandler:
 		object_name = self.builder.get_object("entry_name").get_text()
 		print(object_name)
 		self.main_window.object_id += 1
+		object_id = self.main_window.object_id
 		print(self.main_window.object_id)
 		current_page = self.builder.get_object("notebook_object").get_current_page()
 		print(current_page)
 
+		# if current page = 0, add point
+		if current_page == 0:
+			x = float(self.builder.get_object("entry_x_point").get_text())
+			y = float(self.builder.get_object("entry_y_point").get_text())
 
+			print(x, y)
+
+
+		self.main_window.object_list.append([object_id, object_name, "Point"])
+		self.object_window.destroy()
