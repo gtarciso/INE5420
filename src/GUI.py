@@ -3,6 +3,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import cairo
 
+import objects
+
 import sys
 
 class MainWindow:
@@ -78,7 +80,10 @@ class NewObjectHandler:
 			y = float(self.builder.get_object("entry_y_point").get_text())
 
 			print(x, y)
+			new_point = objects.Point(x, y, object_id, object_name, "Point")
+			test_point = objects.LinePoint(x, y)
+			print(test_point.x, test_point.y)
 
+			self.main_window.object_list.append([new_point.object_id, new_point.object_name, new_point.object_type])
 
-		self.main_window.object_list.append([object_id, object_name, "Point"])
 		self.object_window.destroy()
