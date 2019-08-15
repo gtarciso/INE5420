@@ -47,7 +47,7 @@ class MainWindowHandler:
 		self.builder.connect_signals(NewObjectHandler(self, self.object_window))
 
 		self.object_window.show_all()
-		#self.main_window.darea.queue_draw()
+		
 
 	def on_main_window_destroy(self, object, data=None):
 		print("quit")
