@@ -60,9 +60,10 @@
                   <object class="GtkTreeViewColumn" id="id-view-column">
                     <property name="title" translatable="yes">Id</property>
                     <property name="expand">True</property>
-			<child>
-                      		<object class="GtkCellRendererText"/>
-                      		<attributes>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                      <attributes>
+                        <attribute name="visible">0</attribute>
                         <attribute name="text">0</attribute>
                       </attributes>
                     </child>
@@ -72,9 +73,10 @@
                   <object class="GtkTreeViewColumn" id="name-view-column">
                     <property name="title" translatable="yes">Name</property>
                     <property name="expand">True</property>
-			<child>
-                      		<object class="GtkCellRendererText"/>
-                      		<attributes>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                      <attributes>
+                        <attribute name="visible">0</attribute>
                         <attribute name="text">1</attribute>
                       </attributes>
                     </child>
@@ -84,9 +86,10 @@
                   <object class="GtkTreeViewColumn" id="type-view-column">
                     <property name="title" translatable="yes">Type</property>
                     <property name="expand">True</property>
-			<child>
-                      		<object class="GtkCellRendererText"/>
-                      		<attributes>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext3"/>
+                      <attributes>
+                        <attribute name="visible">0</attribute>
                         <attribute name="text">2</attribute>
                       </attributes>
                     </child>
@@ -124,7 +127,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">delete_object</property>
+            <signal name="clicked" handler="delete_object_button_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="x">170</property>
@@ -139,7 +142,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">clear_button</property>
+            <signal name="clicked" handler="clear_object_button_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="x">170</property>

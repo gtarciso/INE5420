@@ -24,7 +24,6 @@ class MainWindow:
 		self.object_list = self.builder.get_object("liststore1")
 		self.darea = self.builder.get_object("viewport")
 
-
 		self.builder.connect_signals(MainWindowHandler(self))
 		self.window.show_all()
 
@@ -47,11 +46,37 @@ class MainWindowHandler:
 		self.builder.connect_signals(NewObjectHandler(self, self.object_window))
 
 		self.object_window.show_all()
-		
+
+	def delete_object_button_clicked_cb(self, widget):
+		print("delete")
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					self.saved_objects.pop(i)
+					break
+
+			model.remove(it)
+
+		self.darea.queue_draw()
+
+	def clear_object_button_clicked_cb(self, widget):
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+		model.clear()
+		self.saved_objects.clear()
+
+		self.darea.queue_draw()
 
 	def on_main_window_destroy(self, object, data=None):
 		print("quit")
 		Gtk.main_quit()
+
 
 # teste, alterar para desenhar objetos
 	def on_viewport_draw(self, widget, cr):
@@ -108,6 +133,7 @@ class NewObjectHandler:
 		current_page = self.builder.get_object("notebook_object").get_current_page()
 		print(current_page)
 
+
 		# if current page = 0, add point
 		if current_page == 0:
 			x = float(self.builder.get_object("entry_x_point").get_text())
@@ -115,6 +141,8 @@ class NewObjectHandler:
 
 			new_point = objects.Point(x, y, object_id, object_name, "Point")
 			self.main_window.object_list.append([new_point.object_id, new_point.object_name, new_point.object_type])
+
+
 			self.main_window.saved_objects.append(new_point)
 
 
