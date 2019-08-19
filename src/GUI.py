@@ -4,6 +4,8 @@ from gi.repository import Gtk
 from gi.repository import cairo
 
 import objects
+import window
+import viewport
 
 import sys
 
@@ -15,6 +17,9 @@ class MainWindow:
 		self.object_id = 0
 		self.darea = None
 		self.saved_objects = []
+		self.window = None
+		self.viewport = None
+		self.vp_window = None
 
 
 	def run(self):
@@ -23,6 +28,14 @@ class MainWindow:
 		self.window = self.builder.get_object("main_window")
 		self.object_list = self.builder.get_object("liststore1")
 		self.darea = self.builder.get_object("viewport")
+
+		#xvp = self.darea.get_allocation().width
+		#yvp = self.darea.get_allocation().height
+
+		#(xvp, yvp) = self.darea.size_request()
+
+		self.vp_window = window.Window(0, 0, 100, 100)
+		self.viewport = viewport.Viewport(0, 550, 0, 500, self.vp_window)
 
 		self.builder.connect_signals(MainWindowHandler(self))
 		self.window.show_all()
@@ -37,6 +50,7 @@ class MainWindowHandler:
 		self.object_list = main_window.object_list
 		self.darea = main_window.darea
 		self.saved_objects = main_window.saved_objects
+		self.viewport = main_window.viewport
 
 		self.object_id = main_window.object_id
 
@@ -96,10 +110,13 @@ class MainWindowHandler:
 
 		for obj in self.main_window.saved_objects:
 			if obj.object_type == "Point":
-				obj.draw_point(cr)
+				obj.draw_point(cr, self.viewport)
 
 			elif obj.object_type == "Line":
-				obj.draw_line(cr)
+				obj.draw_line(cr, self.viewport)
+
+			elif obj.object_type == "Wireframe":
+				obj.draw_wireframe(cr, self.viewport)
 
 
 
@@ -112,6 +129,7 @@ class NewObjectHandler:
 		self.builder = main_window.builder
 		self.object_window = object_window
 		self.darea = main_window.darea
+		self.wireframe_points = []
 
 
 	def on_window_new_object_destroy(self, object, data=None):				
@@ -156,8 +174,30 @@ class NewObjectHandler:
 			self.main_window.object_list.append([new_line.object_id, new_line.object_name, new_line.object_type])
 			self.main_window.saved_objects.append(new_line)
 
+		if current_page == 2:
+
+			new_list = []
+
+			for obj in self.wireframe_points:
+				new_list.append(obj)
+
+			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe")
+			self.main_window.object_list.append([new_wireframe.object_id, new_wireframe.object_name, new_wireframe.object_type])
+			self.main_window.saved_objects.append(new_wireframe)
+
+			self.wireframe_points.clear()
+
 
 		cr = self.darea.get_window().cairo_create()
 		self.darea.draw(cr)
 
 		self.object_window.destroy()
+
+	def button_add_wireframe_point_clicked_cb(self, widget):
+		print("adding point")
+
+		x = float(self.builder.get_object("entry_x_wireframe").get_text())
+		y = float(self.builder.get_object("entry_y_wireframe").get_text())
+		new_point = objects.LinePoint(x, y)
+
+		self.wireframe_points.append(new_point)

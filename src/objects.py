@@ -1,3 +1,5 @@
+import viewport	
+
 class Object:
 
 	def __init__(self, object_id, object_name, object_type):
@@ -18,12 +20,13 @@ class Point(Object):
 		self.x = x
 		self.y = y
 
-	def draw_point(self, cr):
+	def draw_point(self, cr, viewport: viewport.Viewport):
 		cr.save()
 		cr.set_source_rgb(1, 1, 1)
 		cr.set_line_width(1)
-		cr.move_to(self.x, self.y)
-		cr.line_to(self.x+1, self.y)
+		print(viewport.transformX(self.y))
+		cr.move_to(viewport.transformX(self.x), viewport.transformY(self.y))
+		cr.line_to(viewport.transformX(self.x+0.25), viewport.transformY(self.y))
 		cr.stroke()
 		cr.restore()
 
@@ -34,17 +37,30 @@ class Line(Object):
 		self.start_point = start_point
 		self.end_point = end_point
 
-	def draw_line(self, cr):
+	def draw_line(self, cr, viewport: viewport.Viewport):
 		cr.save()
 		cr.set_source_rgb(1, 1, 1)
 		cr.set_line_width(1)
-		cr.move_to(self.start_point.x, self.start_point.y)
-		cr.line_to(self.end_point.x, self.end_point.y)
+		cr.move_to(viewport.transformX(self.start_point.x), viewport.transformY(self.start_point.y))
+		cr.line_to(viewport.transformX(self.end_point.x), viewport.transformY(self.end_point.y))
 		cr.stroke()
 		cr.restore()
 
-class Polygon(Object):
+class Wireframe(Object):
 
 	def __init__(self, points, object_id, object_name, object_type):
 		super().__init__(object_id, object_name, object_type)
 		self.points = points
+
+	def draw_wireframe(self, cr, viewport: viewport.Viewport):
+		cr.save()
+		cr.set_source_rgb(1, 1, 1)
+		cr.set_line_width(1)
+		initial_point = self.points[0]
+		cr.move_to(viewport.transformX(initial_point.x), viewport.transformY(initial_point.y))
+
+		for obj in self.points:
+			cr.line_to(viewport.transformX(obj.x), viewport.transformY(obj.y))
+
+		cr.stroke()
+		cr.restore()
