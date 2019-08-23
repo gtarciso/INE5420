@@ -15,8 +15,6 @@ class Viewport:
 	def transformX(self, x):
 		xw_min = self.window.x_min
 		xw_max = self.window.x_max
-		print("valor da viewport")
-		print(self.x_min)
 
 		x_vp = ((x - xw_min) / (xw_max - xw_min)) * (self.x_max - self.x_min)
 		return x_vp

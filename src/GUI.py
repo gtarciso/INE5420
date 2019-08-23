@@ -87,6 +87,26 @@ class MainWindowHandler:
 
 		self.darea.queue_draw()
 
+	def up_button_clicked_cb(self, widget):
+		step_entry = self.builder.get_object("step_entry").get_text()
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					break
+
+		if self.saved_objects[obj_id].object_type == "Point":
+			self.saved_objects[obj_id].traverse(0, step_entry)
+
+		self.darea.queue_draw()
+
 	def on_main_window_destroy(self, object, data=None):
 		print("quit")
 		Gtk.main_quit()
@@ -117,8 +137,6 @@ class MainWindowHandler:
 
 			elif obj.object_type == "Wireframe":
 				obj.draw_wireframe(cr, self.viewport)
-
-
 
 
 

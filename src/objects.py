@@ -1,4 +1,5 @@
 import viewport	
+import numpy as np
 
 class Object:
 
@@ -6,6 +7,7 @@ class Object:
 		self.object_id = object_id
 		self.object_name = object_name
 		self.object_type = object_type
+		self.tr_matrix = MatrixTransform()
 
 class LinePoint:
 
@@ -24,11 +26,25 @@ class Point(Object):
 		cr.save()
 		cr.set_source_rgb(1, 1, 1)
 		cr.set_line_width(1)
-		print(viewport.transformX(self.y))
 		cr.move_to(viewport.transformX(self.x), viewport.transformY(self.y))
 		cr.line_to(viewport.transformX(self.x+0.25), viewport.transformY(self.y))
 		cr.stroke()
 		cr.restore()
+
+	def scale(self, dx, dy):
+		scaled_matrix = self.tr_matrix.scale(sx, sy, self.x, self.y)
+		self.x = scaled_matrix[0]
+		self.y = scaled_matrix[1]
+
+	def traverse(self, dx, dy):
+		traversed_matrix = self.tr_matrix.traverse(dx, dy, self.x, self.y)
+		self.x = traversed_matrix[0]
+		self.y = traversed_matrix[1]
+
+	def rotate(self, theta):
+		rotated_matrix = self.tr_matrix.traverse(self.x, self.y, theta)
+		self.x = rotated_matrix[0]
+		self.y = rotated_matrix[1]
 
 class Line(Object):
 
@@ -64,3 +80,41 @@ class Wireframe(Object):
 
 		cr.stroke()
 		cr.restore()
+
+
+class MatrixTransform:
+
+	def scale(self, sx, sy, x, y):
+		param_matrix = np.array((
+			[sx, 0, 0],
+			[0, sy, 0],
+			[0, 0 , 1]), dtype = float)
+
+		point_matrix = np.array(([x, y, 1]), dtype = float)
+		scaled_matrix = np.dot(point_matrix, param_matrix)
+
+		return scaled_matrix
+
+	def traverse(self, dx, dy, x, y):
+		param_matrix = np.array((
+			[1,  0 , 0],
+			[0,  1 , 1],
+			[dx, dy, 1]), dtype = float)
+
+		point_matrix = np.array(([x, y, 1]), dtype = float)
+		traversed_matrix = np.dot(point_matrix, param_matrix)
+
+		return traversed_matrix
+
+	def rotation(self, x, y, theta):
+		sin = np.sin(theta) 
+		cos = np.cos(theta)
+		param_matrix = np.array((
+			[cos, -sin, 0],
+			[sin,  cos, 0],
+			[ 0 ,   0 , 1]), dtype = float)
+
+		point_matrix = np.array(([x, y, 1]), dtype = float)
+		rotated_matrix = np.dot(point_matrix, param_matrix)
+
+		return rotated_matrix
