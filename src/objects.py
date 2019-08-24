@@ -103,6 +103,19 @@ class Wireframe(Object):
 		cr.stroke()
 		cr.restore()
 
+	def scale(self, sx, sy):
+		print("TODO")
+
+	def traverse(self, dx, dy):
+		for obj in self.points:
+			traversed_matrix = self.tr_matrix.traverse(dx, dy, obj.x, obj.y)
+			obj.x = traversed_matrix[0]
+			obj.y = traversed_matrix[1]
+
+
+	def rotate(self, theta):
+		print("TODO")
+
 
 class MatrixTransform:
 
