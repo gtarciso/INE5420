@@ -32,7 +32,7 @@ class Point(Object):
 		cr.restore()
 
 	def scale(self, sx, sy):
-		#param scale(sx, sy, x, y, cx, cy) | cx, cy = center of the object
+		#@param scale(sx, sy, x, y, cx, cy) | cx, cy = center of the object
 		scaled_matrix = self.tr_matrix.scale(sx, sy, self.x, self.y, self.x, self.y)
 		self.x = scaled_matrix[0]
 		self.y = scaled_matrix[1]
@@ -43,7 +43,7 @@ class Point(Object):
 		self.y = traversed_matrix[1]
 
 	def rotate(self, theta):
-		rotated_matrix = self.tr_matrix.traverse(self.x, self.y, theta)
+		rotated_matrix = self.tr_matrix.traverse(theta, self.x, self.y)
 		self.x = rotated_matrix[0]
 		self.y = rotated_matrix[1]
 
@@ -88,7 +88,17 @@ class Line(Object):
 
 
 	def rotate(self, theta):
-		print("TODO")
+		cx = (self.start_point.x + self.end_point.x)/2
+		cy = (self.start_point.y + self.end_point.y)/2
+
+		matrix_init = self.tr_matrix.rotate(theta, self.start_point.x, self.start_point.y, cx, cy)
+		self.start_point.x = matrix_init[0]
+		self.start_point.y = matrix_init[1]
+
+		matrix_end = self.tr_matrix.rotate(theta, self.end_point.x, self.end_point.y, cx, cy)
+		self.end_point.x = matrix_end[0]
+		self.end_point.y = matrix_end[1]
+
 
 class Wireframe(Object):
 
@@ -135,7 +145,22 @@ class Wireframe(Object):
 
 
 	def rotate(self, theta):
-		print("TODO")
+		cx_sum = 0
+		cy_sum = 0
+		k = 0
+
+		for obj in self.points:
+			cx_sum += obj.x
+			cy_sum += obj.y
+			k += 1
+
+		cx = cx_sum/k
+		cy = cy_sum/k
+
+		for obj in self.points:
+			rotated_matrix = self.tr_matrix.rotate(theta, obj.x, obj.y, cx, cy)
+			obj.x = rotated_matrix[0]
+			obj.y = rotated_matrix[1]
 
 
 class MatrixTransform:
@@ -174,7 +199,7 @@ class MatrixTransform:
 
 		return traversed_matrix
 
-	def rotation(self, x, y, theta):
+	def rotate(self, theta, x, y, cx, cy):
 		sin = np.sin(theta) 
 		cos = np.cos(theta)
 
