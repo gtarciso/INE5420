@@ -272,7 +272,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">in_button</property>
+            <signal name="clicked" handler="in_button_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="x">170</property>
@@ -287,7 +287,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">out_button</property>
+            <signal name="clicked" handler="out_button_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="x">170</property>

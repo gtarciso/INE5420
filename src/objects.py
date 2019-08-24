@@ -32,7 +32,8 @@ class Point(Object):
 		cr.restore()
 
 	def scale(self, sx, sy):
-		scaled_matrix = self.tr_matrix.scale(sx, sy, self.x, self.y)
+		#param scale(sx, sy, x, y, cx, cy) | cx, cy = center of the object
+		scaled_matrix = self.tr_matrix.scale(sx, sy, self.x, self.y, self.x, self.y)
 		self.x = scaled_matrix[0]
 		self.y = scaled_matrix[1]
 
@@ -63,11 +64,16 @@ class Line(Object):
 		cr.restore()
 
 	def scale(self, sx, sy):
-		matrix_init = self.tr_matrix.scale(sx, sy, self.start_point.x, self.start_point.y)
+		cx = (self.start_point.x + self.end_point.x)/2
+		cy = (self.start_point.y + self.end_point.y)/2
+
+		matrix_init = self.tr_matrix.scale(sx, sy, self.start_point.x, self.start_point.y, cx, cy)
+
 		self.start_point.x = matrix_init[0]
 		self.start_point.y = matrix_init[1]
 
-		matrix_end = self.tr_matrix.scale(sx, sy, self.end_point.x, self.end_point.y)
+		matrix_end = self.tr_matrix.scale(sx, sy, self.end_point.x, self.end_point.y, cx, cy)
+
 		self.end_point.x = matrix_end[0]
 		self.end_point.y = matrix_end[1]
 
@@ -104,7 +110,22 @@ class Wireframe(Object):
 		cr.restore()
 
 	def scale(self, sx, sy):
-		print("TODO")
+		cx_sum = 0
+		cy_sum = 0
+		k = 0
+		for obj in self.points:
+			cx_sum += obj.x
+			cy_sum += obj.y
+			k += 1
+
+		cx = cx_sum/k
+		cy = cy_sum/k
+
+		for obj in self.points:
+			scaled_matrix = self.tr_matrix.scale(sx, sy, obj.x, obj.y, cx, cy)
+			obj.x = scaled_matrix[0]
+			obj.y = scaled_matrix[1]
+
 
 	def traverse(self, dx, dy):
 		for obj in self.points:
@@ -119,14 +140,26 @@ class Wireframe(Object):
 
 class MatrixTransform:
 
-	def scale(self, sx, sy, x, y):
+	def scale(self, sx, sy, x, y, cx, cy):
+		tr_mt1 = np.array((
+			[ 1 ,  0 , 0],
+			[ 0 ,  1 , 0],
+			[-cx, -cy, 1]), dtype = float)
+
+		tr_mt2 = np.array((
+			[1 , 0 , 0],
+			[0 , 1 , 0],
+			[cx, cy, 1]), dtype = float)
+
 		param_matrix = np.array((
 			[sx, 0, 0],
 			[0, sy, 0],
 			[0, 0 , 1]), dtype = float)
 
 		point_matrix = np.array(([x, y, 1]), dtype = float)
-		scaled_matrix = np.dot(point_matrix, param_matrix)
+		aux_matrix = np.dot(point_matrix, tr_mt1)
+		aux_matrix = np.dot(aux_matrix, param_matrix)
+		scaled_matrix = np.dot(aux_matrix, tr_mt2)
 
 		return scaled_matrix
 
@@ -144,12 +177,26 @@ class MatrixTransform:
 	def rotation(self, x, y, theta):
 		sin = np.sin(theta) 
 		cos = np.cos(theta)
+
+		tr_mt1 = np.array((
+			[ 1 ,  0 , 0],
+			[ 0 ,  1 , 0],
+			[-cx, -cy, 1]), dtype = float)
+
+		tr_mt2 = np.array((
+			[1 , 0 , 0],
+			[0 , 1 , 0],
+			[cx, cy, 1]), dtype = float)
+
 		param_matrix = np.array((
 			[cos, -sin, 0],
 			[sin,  cos, 0],
 			[ 0 ,   0 , 1]), dtype = float)
 
 		point_matrix = np.array(([x, y, 1]), dtype = float)
-		rotated_matrix = np.dot(point_matrix, param_matrix)
+
+		aux_matrix = np.dot(point_matrix, tr_mt1)
+		aux_matrix = np.dot(aux_matrix, param_matrix)
+		rotated_matrix = np.dot(aux_matrix, tr_mt2)
 
 		return rotated_matrix
