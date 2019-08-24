@@ -31,7 +31,7 @@ class Point(Object):
 		cr.stroke()
 		cr.restore()
 
-	def scale(self, dx, dy):
+	def scale(self, sx, sy):
 		scaled_matrix = self.tr_matrix.scale(sx, sy, self.x, self.y)
 		self.x = scaled_matrix[0]
 		self.y = scaled_matrix[1]
@@ -61,6 +61,28 @@ class Line(Object):
 		cr.line_to(viewport.transformX(self.end_point.x), viewport.transformY(self.end_point.y))
 		cr.stroke()
 		cr.restore()
+
+	def scale(self, sx, sy):
+		matrix_init = self.tr_matrix.scale(sx, sy, self.start_point.x, self.start_point.y)
+		self.start_point.x = matrix_init[0]
+		self.start_point.y = matrix_init[1]
+
+		matrix_end = self.tr_matrix.scale(sx, sy, self.end_point.x, self.end_point.y)
+		self.end_point.x = matrix_end[0]
+		self.end_point.y = matrix_end[1]
+
+	def traverse(self, dx, dy):
+		matrix_init = self.tr_matrix.traverse(dx, dy, self.start_point.x, self.start_point.y)
+		self.start_point.x = matrix_init[0]
+		self.start_point.y = matrix_init[1]
+
+		matrix_end = self.tr_matrix.traverse(dx, dy, self.end_point.x, self.end_point.y)
+		self.end_point.x = matrix_end[0]
+		self.end_point.y = matrix_end[1]
+
+
+	def rotate(self, theta):
+		print("TODO")
 
 class Wireframe(Object):
 
