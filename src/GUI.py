@@ -53,6 +53,7 @@ class MainWindowHandler:
 		self.darea = main_window.darea
 		self.saved_objects = main_window.saved_objects
 		self.viewport = main_window.viewport
+		self.window = main_window.vp_window
 
 		self.object_id = main_window.object_id
 
@@ -62,6 +63,7 @@ class MainWindowHandler:
 		self.builder.connect_signals(NewObjectHandler(self, self.object_window))
 
 		self.object_window.show_all()
+
 
 	def delete_object_button_clicked_cb(self, widget):
 		print("delete")
@@ -229,6 +231,31 @@ class MainWindowHandler:
 		
 		self.saved_objects[obj_id].traverse(0, -step_entry)
 
+		self.darea.queue_draw()
+
+
+	def button_window_up_clicked_cb(self, widget):
+		self.window.move_up()
+		self.darea.queue_draw()
+
+	def button_window_down_clicked_cb(self, widget):
+		self.window.move_down()
+		self.darea.queue_draw()
+
+	def button_window_left_clicked_cb(self, widget):
+		self.window.move_left()
+		self.darea.queue_draw()
+
+	def button_window_right_clicked_cb(self, widget):
+		self.window.move_right()
+		self.darea.queue_draw()
+
+	def zoom_in_button_clicked_cb(self, widget):
+		self.window.zoom_in()
+		self.darea.queue_draw()
+
+	def zoom_out_button_clicked_cb(self, widget):
+		self.window.zoom_out()
 		self.darea.queue_draw()
 
 	def on_main_window_destroy(self, object, data=None):
