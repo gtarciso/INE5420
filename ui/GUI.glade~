@@ -14,7 +14,7 @@
   </object>
   <object class="GtkWindow" id="main_window">
     <property name="width_request">1040</property>
-    <property name="height_request">720</property>
+    <property name="height_request">600</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">SGI</property>
     <property name="window_position">center</property>
@@ -378,7 +378,6 @@
         </child>
         <child>
           <object class="GtkButton" id="button_window_up">
-            <property name="label" translatable="yes">↑</property>
             <property name="width_request">60</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -393,7 +392,6 @@
         </child>
         <child>
           <object class="GtkButton" id="button_window_left">
-            <property name="label" translatable="yes">←</property>
             <property name="width_request">60</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -408,7 +406,6 @@
         </child>
         <child>
           <object class="GtkButton" id="button_window_right">
-            <property name="label" translatable="yes">→</property>
             <property name="width_request">60</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -423,7 +420,6 @@
         </child>
         <child>
           <object class="GtkButton" id="button_window_down">
-            <property name="label" translatable="yes">↓</property>
             <property name="width_request">60</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
