@@ -23,6 +23,7 @@ class MainWindow:
 		self.viewport = None
 		self.vp_window = None
 		self.available_id = []
+		self.log = None
 
 
 	def run(self):
@@ -31,6 +32,7 @@ class MainWindow:
 		self.window = self.builder.get_object("main_window")
 		self.object_list = self.builder.get_object("liststore1")
 		self.darea = self.builder.get_object("viewport")
+		self.log = self.builder.get_object("textview_log")
 
 		#xvp = self.darea.get_allocation().width
 		#yvp = self.darea.get_allocation().height
@@ -45,6 +47,11 @@ class MainWindow:
 
 		Gtk.main()
 
+	def append_log(self, text):
+		log_buffer = self.log.get_buffer()
+		it = log_buffer.get_iter_at_offset(-1)
+		log_buffer.insert(it, text + "\n", -1)
+
 class MainWindowHandler:
 
 	def __init__(self, main_window):
@@ -56,6 +63,7 @@ class MainWindowHandler:
 		self.viewport = main_window.viewport
 		self.window = main_window.vp_window
 		self.available_id = main_window.available_id
+		self.log = main_window.log
 
 		self.object_id = main_window.object_id
 
@@ -78,13 +86,15 @@ class MainWindowHandler:
 
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
+					self.main_window.append_log("Object " + self.saved_objects[i].object_name + 
+						" (" + self.saved_objects[i].object_type + ") deleted")
 					self.saved_objects.pop(i)
 					self.available_id.append(object_id)
 					break
 
 			model.remove(it)
 
-		print(self.available_id)
+		
 
 		self.darea.queue_draw()
 
@@ -97,6 +107,7 @@ class MainWindowHandler:
 			self.available_id.append(self.saved_objects[i].object_id)
 
 		self.saved_objects.clear()
+		self.main_window.append_log("All objects deleted")
 
 		self.darea.queue_draw()
 
@@ -272,6 +283,7 @@ class MainWindowHandler:
 		Gtk.main_quit()
 
 
+
 # teste, alterar para desenhar objetos
 	def on_viewport_draw(self, widget, cr):
 		x_max = self.main_window.darea.get_allocation().width
@@ -297,6 +309,12 @@ class MainWindowHandler:
 
 			elif obj.object_type == "Wireframe":
 				obj.draw_wireframe(cr, self.viewport)
+
+
+	def append_log(self, text):
+		log_buffer = self.log.get_buffer()
+		it = log_buffer.get_iter_at_offset(-1)
+		log_buffer.insert(it, text + "\n", -1)
 
 
 
@@ -342,7 +360,7 @@ class NewObjectHandler:
 
 			new_point = objects.Point(x, y, object_id, object_name, "Point")
 			self.main_window.object_list.append([new_point.object_id, new_point.object_name, new_point.object_type])
-
+			self.main_window.append_log("Object " + new_point.object_name + " (" + new_point.object_type + ") created")
 
 			self.main_window.saved_objects.append(new_point)
 
@@ -355,6 +373,8 @@ class NewObjectHandler:
 
 			new_line = objects.Line(objects.LinePoint(x1, y1), objects.LinePoint(x2, y2), object_id, object_name, "Line")
 			self.main_window.object_list.append([new_line.object_id, new_line.object_name, new_line.object_type])
+			self.main_window.append_log("Object " + new_line.object_name + " (" + new_line.object_type + ") created")
+
 			self.main_window.saved_objects.append(new_line)
 
 		if current_page == 2:
@@ -366,6 +386,7 @@ class NewObjectHandler:
 
 			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe")
 			self.main_window.object_list.append([new_wireframe.object_id, new_wireframe.object_name, new_wireframe.object_type])
+			self.main_window.append_log("Object " + new_wireframe.object_name + " (" + new_wireframe.object_type + ") created")
 			self.main_window.saved_objects.append(new_wireframe)
 
 			self.wireframe_points.clear()
@@ -377,10 +398,10 @@ class NewObjectHandler:
 		self.object_window.destroy()
 
 	def button_add_wireframe_point_clicked_cb(self, widget):
-		print("adding point")
 
 		x = float(self.builder.get_object("entry_x_wireframe").get_text())
 		y = float(self.builder.get_object("entry_y_wireframe").get_text())
+		self.main_window.append_log("Point (" + str(x) + ", " + str(y) + ") added to the wireframe")
 		new_point = objects.LinePoint(x, y)
 
 		self.wireframe_points.append(new_point)
