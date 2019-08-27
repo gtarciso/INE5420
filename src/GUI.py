@@ -22,6 +22,7 @@ class MainWindow:
 		self.window = None
 		self.viewport = None
 		self.vp_window = None
+		self.available_id = []
 
 
 	def run(self):
@@ -54,6 +55,7 @@ class MainWindowHandler:
 		self.saved_objects = main_window.saved_objects
 		self.viewport = main_window.viewport
 		self.window = main_window.vp_window
+		self.available_id = main_window.available_id
 
 		self.object_id = main_window.object_id
 
@@ -77,9 +79,12 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					self.saved_objects.pop(i)
+					self.available_id.append(object_id)
 					break
 
 			model.remove(it)
+
+		print(self.available_id)
 
 		self.darea.queue_draw()
 
@@ -87,6 +92,10 @@ class MainWindowHandler:
 		tree_view = self.builder.get_object("list_obj_created")
 		(model, path) = tree_view.get_selection().get_selected_rows()
 		model.clear()
+
+		for i in range(len(self.saved_objects)):
+			self.available_id.append(self.saved_objects[i].object_id)
+
 		self.saved_objects.clear()
 
 		self.darea.queue_draw()
@@ -314,8 +323,13 @@ class NewObjectHandler:
 
 		object_name = self.builder.get_object("entry_name").get_text()
 		print(object_name)
-		self.main_window.object_id += 1
-		object_id = self.main_window.object_id
+		if len(self.main_window.available_id) == 0:
+			self.main_window.object_id += 1
+			object_id = self.main_window.object_id
+		elif len(self.main_window.available_id) != 0:
+			object_id = self.main_window.available_id[0]
+			self.main_window.available_id.pop(0)
+
 		print(self.main_window.object_id)
 		current_page = self.builder.get_object("notebook_object").get_current_page()
 		print(current_page)
