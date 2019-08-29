@@ -149,9 +149,17 @@ class Wireframe(Object):
 		cy_sum = 0
 		k = 0
 
+		aux_list = []
+
 		for obj in self.points:
-			cx_sum += obj.x
-			cy_sum += obj.y
+			aux_tuple = (obj.x, obj.y)
+			if aux_tuple not in aux_list:
+				aux_list.append(aux_tuple)
+
+		for obj in aux_list:		
+			cx_sum += obj[0]
+			cy_sum += obj[1]
+
 			k += 1
 
 		cx = cx_sum/k
