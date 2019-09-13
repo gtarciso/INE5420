@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.22.1 -->
 <interface domain="">
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkListStore" id="liststore1">
@@ -23,6 +23,9 @@
     <property name="icon_name">SGI</property>
     <property name="type_hint">dialog</property>
     <signal name="destroy" handler="on_main_window_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkFixed" id="fixed1">
         <property name="visible">True</property>
@@ -484,6 +487,115 @@
           <packing>
             <property name="x">240</property>
             <property name="y">560</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioButton" id="rb_centro_objeto">
+            <property name="label" translatable="yes">Centro do Objeto</property>
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+            <property name="group">rb_centro_mundo</property>
+            <signal name="group-changed" handler="rb_centro_objeto_group_changed_cb" swapped="no"/>
+            <signal name="toggled" handler="on_rb_centro_objeto_toggled" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">30</property>
+            <property name="y">530</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioButton" id="rb_centro_mundo">
+            <property name="label" translatable="yes">Centro do Mundo</property>
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+            <property name="group">rb_centro_objeto</property>
+            <signal name="group-changed" handler="rb_centro_mundo_group_changed_cb" swapped="no"/>
+            <signal name="toggled" handler="on_rb_centro_mundo_toggled" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">30</property>
+            <property name="y">560</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioButton" id="rb_ponto_arbitrario">
+            <property name="label" translatable="yes">Ponto Arbitrário</property>
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+            <property name="group">rb_centro_objeto</property>
+            <signal name="group-changed" handler="rb_ponto_arbitrario_group_changed_cb" swapped="no"/>
+            <signal name="toggled" handler="on_rb_ponto_arbitrario_toggled" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">30</property>
+            <property name="y">590</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="x_rotate">
+            <property name="width_request">50</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">x</property>
+          </object>
+          <packing>
+            <property name="x">30</property>
+            <property name="y">625</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="y_rotate">
+            <property name="width_request">50</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">y</property>
+          </object>
+          <packing>
+            <property name="x">30</property>
+            <property name="y">655</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="x_rotate_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">100</property>
+            <property name="y">625</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="y_rotate_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">100</property>
+            <property name="y">655</property>
           </packing>
         </child>
       </object>

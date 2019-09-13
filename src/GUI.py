@@ -11,6 +11,11 @@ import numpy as np
 
 import sys
 
+class RotationType:
+	CENTER_OBJECT = 1
+	CENTER_WORLD = 2
+	ARBITRARY = 3
+
 class MainWindow:
 
 	def __init__(self):
@@ -64,6 +69,9 @@ class MainWindowHandler:
 		self.window = main_window.vp_window
 		self.available_id = main_window.available_id
 		self.log = main_window.log
+
+		# 
+		self.rotate_type = RotationType.CENTER_OBJECT
 
 		self.object_id = main_window.object_id
 
@@ -167,7 +175,18 @@ class MainWindowHandler:
 
 		theta = (angle_entry/180)*np.pi
 
-		self.saved_objects[obj_id].rotate(theta)
+		if self.rotate_type == RotationType.CENTER_OBJECT:
+			self.saved_objects[obj_id].rotate(theta)
+
+		elif self.rotate_type == RotationType.CENTER_WORLD:
+			cx = (self.window.x_max - self.window.x_min)/2
+			cy = (self.window.y_max - self.window.y_min)/2
+			self.saved_objects[obj_id].rotateArbitraryPoint(theta, cx, cy)
+
+		elif self.rotate_type == RotationType.ARBITRARY:
+			x_point = float(self.builder.get_object("x_rotate_entry").get_text())
+			y_point = float(self.builder.get_object("y_rotate_entry").get_text())
+			self.saved_objects[obj_id].rotateArbitraryPoint(theta, x_point, y_point)
 
 		self.darea.queue_draw()
 
@@ -282,6 +301,16 @@ class MainWindowHandler:
 		print("quit")
 		Gtk.main_quit()
 
+	def on_rb_centro_objeto_toggled(self, widget):
+		self.rotate_type = RotationType.CENTER_OBJECT
+
+
+	def on_rb_centro_mundo_toggled(self, widget):
+		self.rotate_type = RotationType.CENTER_WORLD
+
+
+	def on_rb_ponto_arbitrario_toggled(self, widget):
+		self.rotate_type = RotationType.ARBITRARY
 
 
 # teste, alterar para desenhar objetos

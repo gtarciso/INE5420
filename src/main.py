@@ -6,6 +6,10 @@ from gi.repository import cairo
 
 import sys
 
+print("Trabalho da disciplina INE5420 - Computação Gráfica")
+print("Feito pelos alunos:")
+print("Gustavo Tarciso da Silva - 14100833")
+print("Mathias Olivio Reolon - 14100860")
 
 app = GUI.MainWindow()
 exit_status = app.run()
