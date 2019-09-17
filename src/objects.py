@@ -3,10 +3,11 @@ import numpy as np
 
 class Object:
 
-	def __init__(self, object_id, object_name, object_type):
+	def __init__(self, object_id, object_name, object_type, object_rgb):
 		self.object_id = object_id
 		self.object_name = object_name
 		self.object_type = object_type
+		self.object_rgb = object_rgb
 		self.tr_matrix = MatrixTransform()
 
 class LinePoint:
@@ -17,14 +18,17 @@ class LinePoint:
 
 class Point(Object):
 
-	def __init__ (self, x: float, y: float, object_id, object_name, object_type):
-		super().__init__(object_id, object_name, object_type)
+	def __init__ (self, x: float, y: float, object_id, object_name, object_type, object_rgb):
+		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.x = x
 		self.y = y
 
 	def draw_point(self, cr, viewport: viewport.Viewport):
+		r = self.object_rgb[0]
+		g = self.object_rgb[1]
+		b = self.object_rgb[2]
 		cr.save()
-		cr.set_source_rgb(1, 1, 1)
+		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
 		cr.move_to(viewport.transformX(self.x), viewport.transformY(self.y))
 		cr.line_to(viewport.transformX(self.x+0.25), viewport.transformY(self.y))
@@ -54,14 +58,17 @@ class Point(Object):
 
 class Line(Object):
 
-	def __init__(self, start_point: LinePoint, end_point: LinePoint, object_id, object_name, object_type):
-		super().__init__(object_id, object_name, object_type)
+	def __init__(self, start_point: LinePoint, end_point: LinePoint, object_id, object_name, object_type, object_rgb):
+		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.start_point = start_point
 		self.end_point = end_point
 
 	def draw_line(self, cr, viewport: viewport.Viewport):
+		r = self.object_rgb[0]
+		g = self.object_rgb[1]
+		b = self.object_rgb[2]
 		cr.save()
-		cr.set_source_rgb(1, 1, 1)
+		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
 		cr.move_to(viewport.transformX(self.start_point.x), viewport.transformY(self.start_point.y))
 		cr.line_to(viewport.transformX(self.end_point.x), viewport.transformY(self.end_point.y))
@@ -116,13 +123,16 @@ class Line(Object):
 
 class Wireframe(Object):
 
-	def __init__(self, points, object_id, object_name, object_type):
-		super().__init__(object_id, object_name, object_type)
+	def __init__(self, points, object_id, object_name, object_type, object_rgb):
+		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.points = points
 
 	def draw_wireframe(self, cr, viewport: viewport.Viewport):
+		r = self.object_rgb[0]
+		g = self.object_rgb[1]
+		b = self.object_rgb[2]
 		cr.save()
-		cr.set_source_rgb(1, 1, 1)
+		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
 		initial_point = self.points[0]
 		cr.move_to(viewport.transformX(initial_point.x), viewport.transformY(initial_point.y))

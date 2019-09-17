@@ -500,7 +500,6 @@
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <property name="group">rb_centro_mundo</property>
-            <signal name="group-changed" handler="rb_centro_objeto_group_changed_cb" swapped="no"/>
             <signal name="toggled" handler="on_rb_centro_objeto_toggled" swapped="no"/>
           </object>
           <packing>
@@ -519,7 +518,6 @@
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <property name="group">rb_centro_objeto</property>
-            <signal name="group-changed" handler="rb_centro_mundo_group_changed_cb" swapped="no"/>
             <signal name="toggled" handler="on_rb_centro_mundo_toggled" swapped="no"/>
           </object>
           <packing>
@@ -538,7 +536,6 @@
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
             <property name="group">rb_centro_objeto</property>
-            <signal name="group-changed" handler="rb_ponto_arbitrario_group_changed_cb" swapped="no"/>
             <signal name="toggled" handler="on_rb_ponto_arbitrario_toggled" swapped="no"/>
           </object>
           <packing>

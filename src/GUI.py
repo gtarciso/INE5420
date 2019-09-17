@@ -192,6 +192,7 @@ class MainWindowHandler:
 
 
 
+
 	def up_button_clicked_cb(self, widget):
 		step_entry = float(self.builder.get_object("step_entry").get_text())
 		tree_view = self.builder.get_object("list_obj_created")
@@ -272,6 +273,11 @@ class MainWindowHandler:
 
 		self.darea.queue_draw()
 
+
+	def rotate_window_button_clicked_cb(self, widget):
+		angle_entry = float(self.builder.get_object("window_angle_entry").get_text())
+		self.window.rotate(angle_entry)
+		self.darea.queue_draw
 
 	def button_window_up_clicked_cb(self, widget):
 		self.window.move_up()
@@ -381,13 +387,21 @@ class NewObjectHandler:
 		current_page = self.builder.get_object("notebook_object").get_current_page()
 		print(current_page)
 
+		color = self.builder.get_object("color_button")
+		rgba = color.get_rgba()
+
+		object_rgb = []
+		object_rgb.append(rgba.red)
+		object_rgb.append(rgba.green)
+		object_rgb.append(rgba.blue)
+		print(object_rgb)
 
 		# if current page = 0, add point
 		if current_page == 0:
 			x = float(self.builder.get_object("entry_x_point").get_text())
 			y = float(self.builder.get_object("entry_y_point").get_text())
 
-			new_point = objects.Point(x, y, object_id, object_name, "Point")
+			new_point = objects.Point(x, y, object_id, object_name, "Point", object_rgb)
 			self.main_window.object_list.append([new_point.object_id, new_point.object_name, new_point.object_type])
 			self.main_window.append_log("Object " + new_point.object_name + " (" + new_point.object_type + ") created")
 
@@ -400,7 +414,7 @@ class NewObjectHandler:
 			y1 = float(self.builder.get_object("entry_y1_line").get_text())
 			y2 = float(self.builder.get_object("entry_y2_line").get_text())
 
-			new_line = objects.Line(objects.LinePoint(x1, y1), objects.LinePoint(x2, y2), object_id, object_name, "Line")
+			new_line = objects.Line(objects.LinePoint(x1, y1), objects.LinePoint(x2, y2), object_id, object_name, "Line", object_rgb)
 			self.main_window.object_list.append([new_line.object_id, new_line.object_name, new_line.object_type])
 			self.main_window.append_log("Object " + new_line.object_name + " (" + new_line.object_type + ") created")
 
@@ -413,7 +427,7 @@ class NewObjectHandler:
 			for obj in self.wireframe_points:
 				new_list.append(obj)
 
-			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe")
+			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe", object_rgb)
 			self.main_window.object_list.append([new_wireframe.object_id, new_wireframe.object_name, new_wireframe.object_type])
 			self.main_window.append_log("Object " + new_wireframe.object_name + " (" + new_wireframe.object_type + ") created")
 			self.main_window.saved_objects.append(new_wireframe)

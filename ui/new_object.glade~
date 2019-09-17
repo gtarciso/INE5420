@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkWindow" id="window_new_object">
@@ -8,7 +8,11 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">New Object</property>
     <property name="window_position">center</property>
+    <property name="type_hint">dialog</property>
     <signal name="destroy" handler="on_window_new_object_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkFixed" id="fixed1">
         <property name="visible">True</property>
@@ -414,6 +418,22 @@
           <packing>
             <property name="x">20</property>
             <property name="y">450</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkColorButton" id="color_button">
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="title" translatable="yes">Choose a color</property>
+            <property name="rgba">rgb(238,238,236)</property>
+            <property name="show_editor">True</property>
+          </object>
+          <packing>
+            <property name="x">280</property>
+            <property name="y">416</property>
           </packing>
         </child>
       </object>
