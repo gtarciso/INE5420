@@ -47,9 +47,7 @@ class Point(Object):
 		self.y = traversed_matrix[1]
 
 	def rotate(self, theta):
-		rotated_matrix = self.tr_matrix.rotate(theta, self.x, self.y, self.x, self.y)
-		self.x = rotated_matrix[0]
-		self.y = rotated_matrix[1]
+		self.rotateArbitraryPoint(theta, self.x, self.y)
 
 	def rotateArbitraryPoint(self, theta, x, y):
 		rotated_matrix = self.tr_matrix.rotate(theta, self.x, self.y, x, y)
@@ -103,13 +101,8 @@ class Line(Object):
 		cx = (self.start_point.x + self.end_point.x)/2
 		cy = (self.start_point.y + self.end_point.y)/2
 
-		matrix_init = self.tr_matrix.rotate(theta, self.start_point.x, self.start_point.y, cx, cy)
-		self.start_point.x = matrix_init[0]
-		self.start_point.y = matrix_init[1]
+		self.rotateArbitraryPoint(theta, cx, cy)
 
-		matrix_end = self.tr_matrix.rotate(theta, self.end_point.x, self.end_point.y, cx, cy)
-		self.end_point.x = matrix_end[0]
-		self.end_point.y = matrix_end[1]
 
 	def rotateArbitraryPoint(self, theta, cx, cy):
 		matrix_init = self.tr_matrix.rotate(theta, self.start_point.x, self.start_point.y, cx, cy)
@@ -189,10 +182,8 @@ class Wireframe(Object):
 		cx = cx_sum/k
 		cy = cy_sum/k
 
-		for obj in self.points:
-			rotated_matrix = self.tr_matrix.rotate(theta, obj.x, obj.y, cx, cy)
-			obj.x = rotated_matrix[0]
-			obj.y = rotated_matrix[1]
+		self.rotateArbitraryPoint(theta, cx, cy)
+
 			
 
 	def rotateArbitraryPoint(self, theta, cx, cy):
