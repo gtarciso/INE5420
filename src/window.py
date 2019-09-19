@@ -7,9 +7,14 @@ class Window:
 		self.x_max = xmax
 		self.y_min = ymin
 		self.y_max = ymax
+		self.wHeight = ymax-ymin
+		self.wWidth = xmax - xmin
+
 		self.zoom_value = 1.1
 		self.theta = 0.0
 		self.window_center = objects.LinePoint((self.x_max - self.x_min)/2, (self.y_max - self.y_min)/2)
+		#self.vup = objects.Line(objects.LinePoint(self.x_min, self.y_min), objects.LinePoint(self.x_min, self.y_max), -1, "", "", [1, 1, 1])
+
 
 		self.tr_matrix = objects.MatrixTransform()
 
@@ -21,6 +26,8 @@ class Window:
 		self.zoom_value = 1.1
 		self.theta = 0.0
 		self.window_center = objects.LinePoint((self.x_max - self.x_min)/2, (self.y_max - self.y_min)/2)
+		self.vup = objects.Line(objects.LinePoint(self.x_min, self.y_min), objects.LinePoint(self.x_min, self.y_max), -1, "", "", [1, 1, 1])
+		self.u = objects.Line(objects.LinePoint(self.x_min, self.y_min), objects.LinePoint(self.x_max, self.y_min), -1, "", "", [1, 1, 1])
 
 	def move_up(self):
 		self.y_min += 5
@@ -51,22 +58,6 @@ class Window:
 		self.y_max *= self.zoom_value
 
 	def rotate(self, theta):
-		self.theta = theta
-		cx = (self.x_max - self.x_min)/2
-		cy = (self.y_max - self.y_min)/2
+		self.theta += theta
 
-		max_coordinates = self.tr_matrix.rotate(theta, self.x_max, self.y_max, cx, cy)
-		min_coordinates = self.tr_matrix.rotate(theta, self.x_min, self.y_min, cx, cy)
 
-		self.x_max = max_coordinates[0]
-		self.x_min = min_coordinates[0]
-
-		self.y_max = max_coordinates[1]
-		self.y_min = min_coordinates[1]
-		print(self.x_min)
-		print(self.x_max)
-		print(self.x_max + self.x_min)
-		print("")
-		print(self.y_min)
-		print(self.y_max)
-		print(self.y_max + self.y_min)

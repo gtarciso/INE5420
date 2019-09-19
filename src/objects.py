@@ -22,6 +22,12 @@ class Point(Object):
 		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.x = x
 		self.y = y
+		self.scn_x = x
+		self.scn_y = y
+
+	def reset_scn(self):
+		self.scn_x = self.x
+		self.scn_y = self.y
 
 	def draw_point(self, cr, viewport: viewport.Viewport):
 		r = self.object_rgb[0]
@@ -30,8 +36,8 @@ class Point(Object):
 		cr.save()
 		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
-		cr.move_to(viewport.transformX(self.x), viewport.transformY(self.y))
-		cr.line_to(viewport.transformX(self.x+0.25), viewport.transformY(self.y))
+		cr.move_to(viewport.transformX(self.scn_x), viewport.transformY(self.scn_y))
+		cr.line_to(viewport.transformX(self.scn_x+0.25), viewport.transformY(self.scn_y))
 		cr.stroke()
 		cr.restore()
 
@@ -54,12 +60,36 @@ class Point(Object):
 		self.x = rotated_matrix[0]
 		self.y = rotated_matrix[1]
 
+	def rotate_scn(self, theta, cx, cy):
+		rotated_matrix = self.tr_matrix.rotate(theta, self.x, self.y, cx, cy)
+		self.scn_x = rotated_matrix[0]
+		self.scn_y = rotated_matrix[1]
+
 class Line(Object):
 
 	def __init__(self, start_point: LinePoint, end_point: LinePoint, object_id, object_name, object_type, object_rgb):
 		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.start_point = start_point
 		self.end_point = end_point
+		sx = float(start_point.x)
+		sy = float(start_point.y)
+		ex = float(end_point.x)
+		ey = float(end_point.y)
+
+		self.scn_start = LinePoint(sx, sy)
+
+		self.scn_end = LinePoint(ex, ey)
+
+
+	def reset_scn(self):
+		if self.scn_start.x == self.start_point.x:
+			print("error")
+			print(self.start_point.x)
+		self.scn_start.x = float(self.start_point.x)
+		self.scn_start.y = float(self.start_point.y)
+		self.scn_end.x = float(self.end_point.x)
+		self.scn_end.y = float(self.end_point.y)
+
 
 	def draw_line(self, cr, viewport: viewport.Viewport):
 		r = self.object_rgb[0]
@@ -68,8 +98,8 @@ class Line(Object):
 		cr.save()
 		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
-		cr.move_to(viewport.transformX(self.start_point.x), viewport.transformY(self.start_point.y))
-		cr.line_to(viewport.transformX(self.end_point.x), viewport.transformY(self.end_point.y))
+		cr.move_to(viewport.transformX(self.scn_start.x), viewport.transformY(self.scn_start.y))
+		cr.line_to(viewport.transformX(self.scn_end.x), viewport.transformY(self.scn_end.y))
 		cr.stroke()
 		cr.restore()
 
@@ -113,12 +143,34 @@ class Line(Object):
 		self.end_point.x = matrix_end[0]
 		self.end_point.y = matrix_end[1]
 
+	def rotate_scn(self, theta, cx, cy):
+		matrix_init = self.tr_matrix.rotate(theta, self.start_point.x, self.start_point.y, cx, cy)
+		self.scn_start.x = matrix_init[0]
+		self.scn_start.y = matrix_init[1]
+
+		matrix_end = self.tr_matrix.rotate(theta, self.end_point.x, self.end_point.y, cx, cy)
+		self.scn_end.x = matrix_end[0]
+		self.scn_end.y = matrix_end[1]
+
 
 class Wireframe(Object):
 
 	def __init__(self, points, object_id, object_name, object_type, object_rgb):
 		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.points = points
+
+		self.scn_points = []
+		for obj in points:
+			x = float(obj.x)
+			y = float(obj.y)
+			self.scn_points.append(LinePoint(x, y))
+
+	def reset_scn(self):
+		self.scn_points.clear()
+		for obj in self.points:
+			x = float(obj.x)
+			y = float(obj.y)
+			self.scn_points.append(LinePoint(x, y))
 
 	def draw_wireframe(self, cr, viewport: viewport.Viewport):
 		r = self.object_rgb[0]
@@ -127,10 +179,10 @@ class Wireframe(Object):
 		cr.save()
 		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
-		initial_point = self.points[0]
+		initial_point = self.scn_points[0]
 		cr.move_to(viewport.transformX(initial_point.x), viewport.transformY(initial_point.y))
 
-		for obj in self.points:
+		for obj in self.scn_points:
 			cr.line_to(viewport.transformX(obj.x), viewport.transformY(obj.y))
 
 		cr.stroke()
@@ -187,10 +239,20 @@ class Wireframe(Object):
 			
 
 	def rotateArbitraryPoint(self, theta, cx, cy):
+
 		for obj in self.points:
 			rotated_matrix = self.tr_matrix.rotate(theta, obj.x, obj.y, cx, cy)
 			obj.x = rotated_matrix[0]
 			obj.y = rotated_matrix[1]
+
+	def rotate_scn(self, theta, cx, cy):
+		i = 0
+		while i < len(self.scn_points):
+			rotated_matrix = self.tr_matrix.rotate(theta, self.points[i].x, self.points[i].y, cx, cy)
+			self.scn_points[i].x = rotated_matrix[0]
+			self.scn_points[i].y = rotated_matrix[1]
+			i += 1
+
 
 
 class MatrixTransform:

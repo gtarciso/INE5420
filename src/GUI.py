@@ -77,6 +77,10 @@ class MainWindowHandler:
 
 	def reset_window_button_clicked_cb(self, widget):
 		self.window.reset(0, 0, 100, 100)
+		for obj in self.main_window.saved_objects:
+			obj.reset_scn()
+
+
 		self.darea.queue_draw()
 
 	def new_object_button_clicked_cb(self, widget):
@@ -140,6 +144,7 @@ class MainWindowHandler:
 					break
 
 		self.saved_objects[obj_id].scale(step_entry, step_entry)
+		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 		self.darea.queue_draw()
 
 	def out_button_clicked_cb(self, widget):
@@ -158,6 +163,7 @@ class MainWindowHandler:
 					break
 
 		self.saved_objects[obj_id].scale(1/step_entry, 1/step_entry)
+		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 		self.darea.queue_draw()
 
 
@@ -181,16 +187,19 @@ class MainWindowHandler:
 
 		if self.rotate_type == RotationType.CENTER_OBJECT:
 			self.saved_objects[obj_id].rotate(theta)
+			self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		elif self.rotate_type == RotationType.CENTER_WORLD:
 			cx = (self.window.x_max - self.window.x_min)/2
 			cy = (self.window.y_max - self.window.y_min)/2
 			self.saved_objects[obj_id].rotateArbitraryPoint(theta, cx, cy)
+			self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		elif self.rotate_type == RotationType.ARBITRARY:
 			x_point = float(self.builder.get_object("x_rotate_entry").get_text())
 			y_point = float(self.builder.get_object("y_rotate_entry").get_text())
 			self.saved_objects[obj_id].rotateArbitraryPoint(theta, x_point, y_point)
+			self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -214,6 +223,7 @@ class MainWindowHandler:
 
 
 		self.saved_objects[obj_id].traverse(0, step_entry)
+		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -235,6 +245,7 @@ class MainWindowHandler:
 
 
 		self.saved_objects[obj_id].traverse(-step_entry, 0)
+		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -254,6 +265,7 @@ class MainWindowHandler:
 					break
 
 		self.saved_objects[obj_id].traverse(step_entry, 0)
+		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -274,6 +286,7 @@ class MainWindowHandler:
 
 		
 		self.saved_objects[obj_id].traverse(0, -step_entry)
+		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -281,7 +294,10 @@ class MainWindowHandler:
 	def rotate_window_button_clicked_cb(self, widget):
 		angle_entry = float(self.builder.get_object("window_angle_entry").get_text())
 		self.window.rotate(angle_entry)
-		self.darea.queue_draw
+		for obj in self.main_window.saved_objects:
+			obj.rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+
+		self.darea.queue_draw()
 
 	def button_window_up_clicked_cb(self, widget):
 		self.window.move_up()
@@ -412,6 +428,7 @@ class NewObjectHandler:
 			y = float(self.builder.get_object("entry_y_point").get_text())
 
 			new_point = objects.Point(x, y, object_id, object_name, "Point", object_rgb)
+			new_point.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
 			self.main_window.object_list.append([new_point.object_id, new_point.object_name, new_point.object_type])
 			self.main_window.append_log("Object " + new_point.object_name + " (" + new_point.object_type + ") created")
 
@@ -425,6 +442,7 @@ class NewObjectHandler:
 			y2 = float(self.builder.get_object("entry_y2_line").get_text())
 
 			new_line = objects.Line(objects.LinePoint(x1, y1), objects.LinePoint(x2, y2), object_id, object_name, "Line", object_rgb)
+			new_line.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
 			self.main_window.object_list.append([new_line.object_id, new_line.object_name, new_line.object_type])
 			self.main_window.append_log("Object " + new_line.object_name + " (" + new_line.object_type + ") created")
 
@@ -438,6 +456,8 @@ class NewObjectHandler:
 				new_list.append(obj)
 
 			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe", object_rgb)
+			new_wireframe.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
+
 			self.main_window.object_list.append([new_wireframe.object_id, new_wireframe.object_name, new_wireframe.object_type])
 			self.main_window.append_log("Object " + new_wireframe.object_name + " (" + new_wireframe.object_type + ") created")
 			self.main_window.saved_objects.append(new_wireframe)
