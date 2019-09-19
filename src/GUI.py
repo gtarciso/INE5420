@@ -45,7 +45,7 @@ class MainWindow:
 		#(xvp, yvp) = self.darea.size_request()
 
 		self.vp_window = window.Window(0, 0, 100, 100)
-		self.viewport = viewport.Viewport(0, 550, 0, 500, self.vp_window)
+		self.viewport = viewport.Viewport(20, 530, 20, 480, self.vp_window)
 
 		self.builder.connect_signals(MainWindowHandler(self))
 		self.window.show_all()
@@ -74,6 +74,10 @@ class MainWindowHandler:
 		self.rotate_type = RotationType.CENTER_OBJECT
 
 		self.object_id = main_window.object_id
+
+	def reset_window_button_clicked_cb(self, widget):
+		self.window.reset(0, 0, 100, 100)
+		self.darea.queue_draw()
 
 	def new_object_button_clicked_cb(self, widget):
 		self.builder.add_from_file("../ui/new_object.glade")
@@ -333,6 +337,13 @@ class MainWindowHandler:
 		cr.line_to(x_max, 0)
 		cr.line_to(0, 0)
 		cr.fill()
+		cr.set_source_rgb(1, 1, 1)
+		cr.move_to(self.viewport.x_min, self.viewport.y_min)
+		cr.line_to(self.viewport.x_min, self.viewport.y_max)
+		cr.line_to(self.viewport.x_max, self.viewport.y_max)
+		cr.line_to(self.viewport.x_max, self.viewport.y_min)
+		cr.line_to(self.viewport.x_min, self.viewport.y_min)
+		cr.stroke()
 		cr.restore()
 
 		for obj in self.main_window.saved_objects:

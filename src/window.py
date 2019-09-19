@@ -9,7 +9,18 @@ class Window:
 		self.y_max = ymax
 		self.zoom_value = 1.1
 		self.theta = 0.0
+		self.window_center = objects.LinePoint((self.x_max - self.x_min)/2, (self.y_max - self.y_min)/2)
+
 		self.tr_matrix = objects.MatrixTransform()
+
+	def reset(self, xmin, ymin, xmax, ymax):
+		self.x_min = xmin
+		self.x_max = xmax
+		self.y_min = ymin
+		self.y_max = ymax
+		self.zoom_value = 1.1
+		self.theta = 0.0
+		self.window_center = objects.LinePoint((self.x_max - self.x_min)/2, (self.y_max - self.y_min)/2)
 
 	def move_up(self):
 		self.y_min += 5
