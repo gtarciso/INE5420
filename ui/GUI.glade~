@@ -306,6 +306,7 @@
             <property name="can_focus">True</property>
             <property name="max_length">4</property>
             <property name="width_chars">0</property>
+            <property name="input_purpose">number</property>
           </object>
           <packing>
             <property name="x">100</property>
@@ -345,6 +346,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="width_chars">0</property>
+            <property name="input_purpose">number</property>
           </object>
           <packing>
             <property name="x">100</property>
@@ -491,7 +493,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="rb_centro_objeto">
-            <property name="label" translatable="yes">Centro do Objeto</property>
+            <property name="label" translatable="yes">Object Center</property>
             <property name="width_request">100</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -509,7 +511,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="rb_centro_mundo">
-            <property name="label" translatable="yes">Centro do Mundo</property>
+            <property name="label" translatable="yes">World Center</property>
             <property name="width_request">100</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -527,7 +529,7 @@
         </child>
         <child>
           <object class="GtkRadioButton" id="rb_ponto_arbitrario">
-            <property name="label" translatable="yes">Ponto Arbitrário</property>
+            <property name="label" translatable="yes">Arbitrary Point</property>
             <property name="width_request">100</property>
             <property name="height_request">25</property>
             <property name="visible">True</property>
@@ -576,6 +578,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="width_chars">0</property>
+            <property name="input_purpose">number</property>
           </object>
           <packing>
             <property name="x">100</property>
@@ -589,10 +592,52 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="width_chars">0</property>
+            <property name="input_purpose">number</property>
           </object>
           <packing>
             <property name="x">100</property>
             <property name="y">655</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="window_angle_label">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Angle</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">195</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="window_angle_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">900</property>
+            <property name="y">195</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="rotate_window_button">
+            <property name="label" translatable="yes">Rotate</property>
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="rotate_window_button_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">865</property>
+            <property name="y">240</property>
           </packing>
         </child>
       </object>

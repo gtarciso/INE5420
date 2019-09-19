@@ -394,7 +394,6 @@ class NewObjectHandler:
 		object_rgb.append(rgba.red)
 		object_rgb.append(rgba.green)
 		object_rgb.append(rgba.blue)
-		print(object_rgb)
 
 		# if current page = 0, add point
 		if current_page == 0:

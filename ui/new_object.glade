@@ -2,6 +2,8 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkEntryBuffer" id="entrybuffer1"/>
+  <object class="GtkEntryCompletion" id="entrycompletion1"/>
   <object class="GtkWindow" id="window_new_object">
     <property name="width_request">400</property>
     <property name="height_request">500</property>
@@ -86,6 +88,7 @@
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
                     <property name="max_width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">55</property>
@@ -112,6 +115,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">145</property>
@@ -168,6 +172,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">55</property>
@@ -194,6 +199,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">145</property>
@@ -233,6 +239,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">55</property>
@@ -259,6 +266,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">145</property>
@@ -321,6 +329,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">55</property>
@@ -347,6 +356,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="width_chars">0</property>
+                    <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="x">145</property>
@@ -433,6 +443,19 @@
           </object>
           <packing>
             <property name="x">280</property>
+            <property name="y">410</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Color</property>
+          </object>
+          <packing>
+            <property name="x">210</property>
             <property name="y">410</property>
           </packing>
         </child>
