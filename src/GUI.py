@@ -294,8 +294,9 @@ class MainWindowHandler:
 	def rotate_window_button_clicked_cb(self, widget):
 		angle_entry = float(self.builder.get_object("window_angle_entry").get_text())
 		self.window.rotate(angle_entry)
+		win_theta = (-self.window.theta/180)*np.pi
 		for obj in self.main_window.saved_objects:
-			obj.rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+			obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
