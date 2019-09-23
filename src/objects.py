@@ -88,10 +88,7 @@ class Line(Object):
 		self.scn_end = LinePoint(ex, ey)
 
 
-	def reset_scn(self):
-		if self.scn_start.x == self.start_point.x:
-			print("error")
-			print(self.start_point.x)
+	def reset_scn(self):	
 		self.scn_start.x = float(self.start_point.x)
 		self.scn_start.y = float(self.start_point.y)
 		self.scn_end.x = float(self.end_point.x)
@@ -158,6 +155,7 @@ class Line(Object):
 		matrix_end = self.tr_matrix.rotate(theta, self.end_point.x, self.end_point.y, cx, cy)
 		self.scn_end.x = matrix_end[0]
 		self.scn_end.y = matrix_end[1]
+		
 
 
 	def clip_line(self, window: window.Window):

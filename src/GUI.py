@@ -363,18 +363,23 @@ class MainWindowHandler:
 		cr.stroke()
 		cr.restore()
 
+		win_theta = (-self.window.theta/180)*np.pi
+
 		for obj in self.main_window.saved_objects:
 			if obj.object_type == "Point":
+				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
 				obj.clip_point(self.window)
 				if obj.visible:
 					obj.draw_point(cr, self.viewport)
 
 			elif obj.object_type == "Line":
+				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
 				obj.clip_line(self.window)
 				if obj.visible:
 					obj.draw_line(cr, self.viewport)
 
 			elif obj.object_type == "Wireframe":
+				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
 				obj.draw_wireframe(cr, self.viewport)
 
 
