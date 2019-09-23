@@ -370,7 +370,9 @@ class MainWindowHandler:
 					obj.draw_point(cr, self.viewport)
 
 			elif obj.object_type == "Line":
-				obj.draw_line(cr, self.viewport)
+				obj.clip_line(self.window)
+				if obj.visible:
+					obj.draw_line(cr, self.viewport)
 
 			elif obj.object_type == "Wireframe":
 				obj.draw_wireframe(cr, self.viewport)

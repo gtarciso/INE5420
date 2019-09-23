@@ -160,6 +160,19 @@ class Line(Object):
 		self.scn_end.y = matrix_end[1]
 
 
+	def clip_line(self, window: window.Window):
+		clip = clipping.Clipping()
+		x_start = self.scn_start.x
+		y_start = self.scn_start.y
+		x_end = self.scn_end.x
+		y_end = self.scn_end.y
+		(self.visible, x1, y1, x2, y2) = clip.cohen_sutherland(x_start, y_start, x_end, y_end, window)
+		self.scn_start.x = x1
+		self.scn_start.y = y1
+		self.scn_end.x = x2
+		self.scn_end.y = y2
+
+
 class Wireframe(Object):
 
 	def __init__(self, points, object_id, object_name, object_type, object_rgb):
