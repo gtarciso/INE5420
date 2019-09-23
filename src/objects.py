@@ -1,4 +1,6 @@
-import viewport	
+import viewport
+import window	
+import clipping
 import numpy as np
 
 class Object:
@@ -24,6 +26,7 @@ class Point(Object):
 		self.y = y
 		self.scn_x = x
 		self.scn_y = y
+		self.visible = True
 
 	def reset_scn(self):
 		self.scn_x = self.x
@@ -64,6 +67,10 @@ class Point(Object):
 		rotated_matrix = self.tr_matrix.rotate(theta, self.x, self.y, cx, cy)
 		self.scn_x = rotated_matrix[0]
 		self.scn_y = rotated_matrix[1]
+
+	def clip_point(self, window: window.Window):
+		clip = clipping.Clipping()
+		self.visible = clip.point_clipping(self.scn_x, self.scn_y, window)
 
 class Line(Object):
 

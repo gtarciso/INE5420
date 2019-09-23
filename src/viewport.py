@@ -17,7 +17,7 @@ class Viewport:
 		xw_max = self.window.x_max
 
 		if xw_max - xw_min != 0:
-			x_vp = ((x - xw_min) / (xw_max - xw_min)) * (self.x_max - self.x_min)
+			x_vp = (((x - xw_min) / (xw_max - xw_min)) * (self.x_max - self.x_min)) + self.x_min
 		elif xw_max - xw_min == 0:
 			x_vp = (x - xw_min) * (self.x_max - self.x_min)
 		
@@ -30,7 +30,7 @@ class Viewport:
 		yw_max = self.window.y_max
 
 		if yw_max - yw_min != 0:
-			y_vp = (1 - (y - yw_min) / (yw_max - yw_min)) * (self.y_max - self.y_min) 
+			y_vp = ((1 - ((y - yw_min) / (yw_max - yw_min))) * (self.y_max - self.y_min)) + self.y_min 
 		elif yw_max - yw_min == 0:
 			y_vp = (1 - (y - yw_min)) * (self.y_max - self.y_min) 
 

@@ -365,7 +365,9 @@ class MainWindowHandler:
 
 		for obj in self.main_window.saved_objects:
 			if obj.object_type == "Point":
-				obj.draw_point(cr, self.viewport)
+				obj.clip_point(self.window)
+				if obj.visible:
+					obj.draw_point(cr, self.viewport)
 
 			elif obj.object_type == "Line":
 				obj.draw_line(cr, self.viewport)

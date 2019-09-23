@@ -26,8 +26,7 @@ class Window:
 		self.zoom_value = 1.1
 		self.theta = 0.0
 		self.window_center = objects.LinePoint((self.x_max - self.x_min)/2, (self.y_max - self.y_min)/2)
-		self.vup = objects.Line(objects.LinePoint(self.x_min, self.y_min), objects.LinePoint(self.x_min, self.y_max), -1, "", "", [1, 1, 1])
-		self.u = objects.Line(objects.LinePoint(self.x_min, self.y_min), objects.LinePoint(self.x_max, self.y_min), -1, "", "", [1, 1, 1])
+		#self.vup = objects.Line(objects.LinePoint(self.x_min, self.y_min), objects.LinePoint(self.x_min, self.y_max), -1, "", "", [1, 1, 1])
 
 	def move_up(self):
 		self.y_min += 5
