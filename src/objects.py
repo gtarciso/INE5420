@@ -274,7 +274,6 @@ class Wireframe(Object):
 			i += 1
 
 
-
 class MatrixTransform:
 
 	def scale(self, sx, sy, x, y, cx, cy):

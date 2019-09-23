@@ -14,24 +14,37 @@ class Clipping:
 
 
 	def cs_left_intersec(self, x_start, y_start, x_end, y_end, x_left):
-		m = (y_end - y_start) / (x_end - x_start)
-		y = m * (x_left - x_start) + y_start
-		return y
+		if x_end - x_start != 0:
+			m = (y_end - y_start) / (x_end - x_start)
+			y = m * (x_left - x_start) + y_start
+			return y
+		else:
+			return y_start
+
 
 	def cs_right_intersec(self, x_start, y_start, x_end, y_end, x_right):
-		m = (y_end - y_start) / (x_end - x_start)
-		y = m * (x_right - x_end) + y_end
-		return y
+		if x_end - x_start != 0:
+			m = (y_end - y_start) / (x_end - x_start)
+			y = m * (x_right - x_end) + y_end
+			return y
+		else:
+			return y_end
 
 	def cs_up_intersec(self, x_start, y_start, x_end, y_end, y_up):
-		m = (y_end - y_start) / (x_end - x_start)
-		x = x_start + 1/m * (y_up - y_start)
-		return x
+		if x_end - x_start != 0:
+			m = (y_end - y_start) / (x_end - x_start)
+			x = x_start + 1/m * (y_up - y_start)
+			return x
+		else:
+			return x_start
 
 	def cs_down_intersec(self, x_start, y_start, x_end, y_end, y_down):
-		m = (y_end - y_start) / (x_end - x_start)
-		x = x_end + 1/m * (y_down - y_end)
-		return x
+		if x_end - x_start != 0:
+			m = (y_end - y_start) / (x_end - x_start)
+			x = x_end + 1/m * (y_down - y_end)
+			return x
+		else:
+			return x_end
 
 	def cohen_sutherland(self, x_start, y_start, x_end, y_end, window: window.Window):
 		rc1 = [0, 0, 0, 0]
