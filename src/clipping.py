@@ -177,6 +177,3 @@ class Clipping:
 			if y < window.y_min:
 				y = window.y_min
 			return (x, y)
-
-
-		#return (x, y)
