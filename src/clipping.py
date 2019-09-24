@@ -84,42 +84,99 @@ class Clipping:
 
 			i += 1
 
+
+		sum_rc1 = rc1[0]+rc1[1]+rc1[2]+rc1[3]
+		sum_rc2 = rc2[0]+rc2[1]+rc2[2]+rc2[3]
+
+		if sum_rc1 > 1:
+			
+			(x_start, y_start) = self.get_corner(rc1, x_start, y_start, x_end, y_end, window)
+
+		if sum_rc2 > 1:
+
+			(x_end, y_end) = self.get_corner(rc2, x_start, y_start, x_end, y_end, window)
 		# index 0 = top, 1 = down, 2 = right, 3 = left
 		# start point
+		if sum_rc1 == 1:
+			if rc1[0] == 1:
+				x_start = self.cs_up_intersec(x_start, y_start, x_end, y_end, window.y_max)
+				y_start = window.y_max
 
-		if rc1[0] == 1:
-			x_start = self.cs_up_intersec(x_start, y_start, x_end, y_end, window.y_max)
-			y_start = window.y_max
+			if rc1[1] == 1:
+				x_start = self.cs_down_intersec(x_start, y_start, x_end, y_end, window.y_min)
+				y_start = window.y_min
 
-		if rc1[1] == 1:
-			x_start = self.cs_down_intersec(x_start, y_start, x_end, y_end, window.y_min)
-			y_start = window.y_min
+			if rc1[2] == 1:
+				y_start = self.cs_right_intersec(x_start, y_start, x_end, y_end, window.x_max)
+				x_start = window.x_max
 
-		if rc1[2] == 1:
-			y_start = self.cs_right_intersec(x_start, y_start, x_end, y_end, window.x_max)
-			x_start = window.x_max
-
-		if rc1[3] == 1:
-			y_start = self.cs_left_intersec(x_start, y_start, x_end, y_end, window.x_min)
-			x_start = window.x_min
+			if rc1[3] == 1:
+				y_start = self.cs_left_intersec(x_start, y_start, x_end, y_end, window.x_min)
+				x_start = window.x_min
 
 		# end point
+		if sum_rc2 == 1:
+			if rc2[0] == 1:
+				x_end = self.cs_up_intersec(x_start, y_start, x_end, y_end, window.y_max)
+				y_end = window.y_max
 
-		if rc2[0] == 1:
-			x_end = self.cs_up_intersec(x_start, y_start, x_end, y_end, window.y_max)
-			y_end = window.y_max
+			if rc2[1] == 1:
+				x_end = self.cs_down_intersec(x_start, y_start, x_end, y_end, window.y_min)
+				y_end = window.y_min
 
-		if rc2[1] == 1:
-			x_end = self.cs_down_intersec(x_start, y_start, x_end, y_end, window.y_min)
-			y_end = window.y_min
+			if rc2[2] == 1:
+				y_end = self.cs_right_intersec(x_start, y_start, x_end, y_end, window.x_max)
+				x_end = window.x_max
 
-		if rc2[2] == 1:
-			y_end = self.cs_right_intersec(x_start, y_start, x_end, y_end, window.x_max)
-			x_end = window.x_max
-
-		if rc2[3] == 1:
-			y_end = self.cs_left_intersec(x_start, y_start, x_end, y_end, window.x_min)
-			x_end = window.x_min
+			if rc2[3] == 1:
+				y_end = self.cs_left_intersec(x_start, y_start, x_end, y_end, window.x_min)
+				x_end = window.x_min
 
 
 		return (True, x_start, y_start, x_end, y_end)
+
+
+	def get_corner(self, rc, x_start, y_start, x_end, y_end, window: window.Window):
+		
+		# index 0 = top, 1 = down, 2 = right, 3 = left
+		# rc = top and right
+		x = window.x_min
+		y = window.y_min
+		if rc[0] == 1 and rc[2] == 1:
+			x = self.cs_up_intersec(x_start, y_start, x_end, y_end, window.y_max)
+			y = self.cs_right_intersec(x_start, y_start, x_end, y_end, window.x_max)
+			if x > window.x_max:
+				x = window.x_max
+			if y > window.y_max:
+				y = window.y_max
+			return (x, y)
+
+		if rc[0] == 1 and rc[3] == 1:
+			x = self.cs_up_intersec(x_start, y_start, x_end, y_end, window.y_max)
+			y = self.cs_left_intersec(x_start, y_start, x_end, y_end, window.x_min)
+			if x < window.x_min:
+				x = window.x_min
+			if y > window.y_max:
+				y = window.y_max
+			return (x, y)
+
+		if rc[1] == 1 and rc[2] == 1:
+			x = self.cs_down_intersec(x_start, y_start, x_end, y_end, window.y_min)
+			y = self.cs_right_intersec(x_start, y_start, x_end, y_end, window.x_max)
+			if x > window.x_max:
+				x = window.x_max
+			if y < window.y_min:
+				y = window.y_min
+			return (x, y)
+
+		if rc[1] == 1 and rc[3] == 1:
+			x = self.cs_down_intersec(x_start, y_start, x_end, y_end, window.y_min)
+			y = self.cs_left_intersec(x_start, y_start, x_end, y_end, window.x_min)
+			if x < window.x_min:
+				x = window.x_min
+			if y < window.y_min:
+				y = window.y_min
+			return (x, y)
+
+
+		#return (x, y)

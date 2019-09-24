@@ -17,6 +17,7 @@ class LinePoint:
 	def __init__(self, x: float, y: float):
 		self.x = x
 		self.y = y
+		self.visible = True
 
 class Point(Object):
 
@@ -155,7 +156,7 @@ class Line(Object):
 		matrix_end = self.tr_matrix.rotate(theta, self.end_point.x, self.end_point.y, cx, cy)
 		self.scn_end.x = matrix_end[0]
 		self.scn_end.y = matrix_end[1]
-		
+
 
 
 	def clip_line(self, window: window.Window):
@@ -170,6 +171,48 @@ class Line(Object):
 		self.scn_end.x = x2
 		self.scn_end.y = y2
 
+
+# class Wireframe(Object):
+
+# 	def __init__(self, points, object_id, object_name, object_type, object_rgb):
+# 		super().__init__(object_id, object_name, object_type, object_rgb)
+# 		self.lines = []
+# 		self.scn_lines = []
+# 		i = 1
+# 		for i < len(points):
+# 			new_line = Line(points[i-1], points[i], object_id, object_name, "", object_rgb)
+# 			self.lines.append(new_line)
+# 			i += 1
+
+# 		for obj in self.lines:
+# 			x1 = float(obj.start_point.x)
+# 			y1 = float(obj.start_point.y)
+# 			x2 = float(obj.end_point.x)
+# 			y2 = float(obj.end_point.y)
+# 			new_scn_line = Line(LinePoint(x1, y1), LinePoint(x2, y2), object_id, object_name, "", object_rgb)
+# 			self.scn_lines.append(new_scn_line)
+
+# 	def reset_scn(self):
+# 		self.scn_lines.clear()
+# 		for obj in self.lines:
+# 			x1 = float(obj.start_point.x)
+# 			y1 = float(obj.start_point.y)
+# 			x2 = float(obj.end_point.x)
+# 			y2 = float(obj.end_point.y)
+# 			new_scn_line = Line(LinePoint(x1, y1), LinePoint(x2, y2), object_id, object_name, "", object_rgb)
+# 			self.scn_lines.append(new_scn_line)
+
+# 	def draw_wireframe(self, cr, viewport: viewport.Viewport):
+# 		r = self.object_rgb[0]
+#  		g = self.object_rgb[1]
+#  		b = self.object_rgb[2]
+#  		cr.save()
+#  		cr.set_source_rgb(r, g, b)
+#  		cr.set_line_width(1)
+#  		initial_point = self.scn_lines[0].start_point
+# 		for obj in self.scn_lines:
+# 			if obj.visible:
+# 				obj.draw_line(cr, viewport)
 
 class Wireframe(Object):
 
@@ -201,7 +244,8 @@ class Wireframe(Object):
 		cr.move_to(viewport.transformX(initial_point.x), viewport.transformY(initial_point.y))
 
 		for obj in self.scn_points:
-			cr.line_to(viewport.transformX(obj.x), viewport.transformY(obj.y))
+			if obj.visible:
+				cr.line_to(viewport.transformX(obj.x), viewport.transformY(obj.y))
 
 		cr.stroke()
 		cr.restore()
@@ -270,6 +314,37 @@ class Wireframe(Object):
 			self.scn_points[i].x = rotated_matrix[0]
 			self.scn_points[i].y = rotated_matrix[1]
 			i += 1
+
+
+	def clip_wireframe(self, window: window.Window):
+		clip = clipping.Clipping()
+		aux = []
+		i = 1
+
+		while i < len(self.scn_points):
+			start = self.scn_points[i-1]
+			end = self.scn_points[i]
+			x_start = start.x
+			y_start = start.y
+			x_end = end.x
+			y_end = end.y
+			(v, x1, y1, x2, y2) = clip.cohen_sutherland(x_start, y_start, x_end, y_end, window)
+			st = LinePoint(x1, y1)
+			st.visible = v
+			ed = LinePoint(x2, y2)
+			ed.visible = v
+			aux.append(st)
+			if i == len(self.scn_points)-1:
+				aux.append(ed)
+			i += 1
+
+		self.scn_points.clear()
+		for obj in aux:
+			x = float(obj.x)
+			y = float(obj.y)
+			new_lp = LinePoint(x, y)
+			new_lp.visible = obj.visible
+			self.scn_points.append(new_lp)
 
 
 class MatrixTransform:

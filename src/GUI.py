@@ -380,6 +380,8 @@ class MainWindowHandler:
 
 			elif obj.object_type == "Wireframe":
 				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
+				obj.clip_wireframe(self.window)
+
 				obj.draw_wireframe(cr, self.viewport)
 
 
