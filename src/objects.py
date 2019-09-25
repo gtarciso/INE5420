@@ -175,9 +175,10 @@ class Line(Object):
 
 class Wireframe(Object):
 
-	def __init__(self, points, object_id, object_name, object_type, object_rgb):
+	def __init__(self, points, object_id, object_name, object_type, object_rgb, is_solid):
 		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.lines = []
+		self.is_solid = is_solid
 		#self.scn_lines = []
 		i = 1
 		while i < len(points):
@@ -199,15 +200,30 @@ class Wireframe(Object):
 		cr.save()
 		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(1)
-		initial_point = self.lines[0].scn_start
+		initial_point = None
+		i = 0
+		while i < len(self.lines):
+			if self.lines[i].visible:
+				initial_point = self.lines[i].scn_start
+				break
+			i += 1
 
-		for obj in self.lines:
-			if obj.visible:
-				cr.move_to(viewport.transformX(obj.scn_start.x), viewport.transformY(obj.scn_start.y))
-				cr.line_to(viewport.transformX(obj.scn_end.x), viewport.transformY(obj.scn_end.y))	
+		if initial_point != None:
+
+			cr.move_to(viewport.transformX(float(initial_point.x)), viewport.transformY(float(initial_point.y)))
+			while i < len(self.lines):	
+				if self.lines[i].visible:
+					cr.line_to(viewport.transformX(self.lines[i].scn_start.x), viewport.transformY(self.lines[i].scn_start.y))
+					cr.line_to(viewport.transformX(self.lines[i].scn_end.x), viewport.transformY(self.lines[i].scn_end.y))
+
+				i += 1	
 
 
-		cr.stroke()
+		if self.is_solid:
+			cr.fill()
+		else:
+			cr.stroke()
+
 		cr.restore()
 
 	def scale(self, sx, sy):
@@ -300,134 +316,141 @@ class Wireframe(Object):
 #                                       	            CLASSE ALTERNATIVA                                                      #
 #################################################################################################################################
 
-# class Wireframe(Object):
+class Wireframe1(Object):
 
-# 	def __init__(self, points, object_id, object_name, object_type, object_rgb):
-# 		super().__init__(object_id, object_name, object_type, object_rgb)
-# 		self.points = points
+	def __init__(self, points, object_id, object_name, object_type, object_rgb):
+		super().__init__(object_id, object_name, object_type, object_rgb)
+		self.points = points
 
-# 		self.scn_points = []
-# 		for obj in points:
-# 			x = float(obj.x)
-# 			y = float(obj.y)
-# 			self.scn_points.append(LinePoint(x, y))
+		self.scn_points = []
+		for obj in points:
+			x = float(obj.x)
+			y = float(obj.y)
+			self.scn_points.append(LinePoint(x, y))
 
-# 	def reset_scn(self):
-# 		self.scn_points.clear()
-# 		for obj in self.points:
-# 			x = float(obj.x)
-# 			y = float(obj.y)
-# 			self.scn_points.append(LinePoint(x, y))
+	def reset_scn(self):
+		self.scn_points.clear()
+		for obj in self.points:
+			x = float(obj.x)
+			y = float(obj.y)
+			self.scn_points.append(LinePoint(x, y))
 
-# 	def draw_wireframe(self, cr, viewport: viewport.Viewport):
-# 		r = self.object_rgb[0]
-# 		g = self.object_rgb[1]
-# 		b = self.object_rgb[2]
-# 		cr.save()
-# 		cr.set_source_rgb(r, g, b)
-# 		cr.set_line_width(1)
-# 		initial_point = self.scn_points[0]
-# 		cr.move_to(viewport.transformX(initial_point.x), viewport.transformY(initial_point.y))
-# 		for obj in self.scn_points:
-# 			if obj.visible:
-# 				new_l = Line(initial_point, obj, self.object_id, self.object_name, self.object_type, self.object_rgb)
-# 				new_l.draw_line(cr, viewport)
-# 				initial_point = obj
-# 				#cr.line_to(viewport.transformX(obj.x), viewport.transformY(obj.y))
-
-
-# 		cr.fill()
-# 		#cr.stroke()
-# 		cr.restore()
-
-	# def scale(self, sx, sy):
-	# 	cx_sum = 0
-	# 	cy_sum = 0
-	# 	k = 0
-	# 	for obj in self.points:
-	# 		cx_sum += obj.x
-	# 		cy_sum += obj.y
-	# 		k += 1
-
-	# 	cx = cx_sum/k
-	# 	cy = cy_sum/k
-
-	# 	for obj in self.points:
-	# 		scaled_matrix = self.tr_matrix.scale(sx, sy, obj.x, obj.y, cx, cy)
-	# 		obj.x = scaled_matrix[0]
-	# 		obj.y = scaled_matrix[1]
+	def draw_wireframe(self, cr, viewport: viewport.Viewport):
+		r = self.object_rgb[0]
+		g = self.object_rgb[1]
+		b = self.object_rgb[2]
+		cr.save()
+		cr.set_source_rgb(r, g, b)
+		cr.set_line_width(1)
+		initial_point = self.scn_points[0]
+		cr.move_to(viewport.transformX(initial_point.x), viewport.transformY(initial_point.y))
+		for obj in self.scn_points:
+			if obj.visible and initial_point.visible:
+				new_l = Line(initial_point, obj, self.object_id, self.object_name, self.object_type, self.object_rgb)
+				new_l.draw_line(cr, viewport)
+				initial_point = obj
+				#cr.line_to(viewport.transformX(obj.x), viewport.transformY(obj.y))
 
 
-	# def traverse(self, dx, dy):
-	# 	for obj in self.points:
-	# 		traversed_matrix = self.tr_matrix.traverse(dx, dy, obj.x, obj.y)
-	# 		obj.x = traversed_matrix[0]
-	# 		obj.y = traversed_matrix[1]
+		#cr.fill()
+		cr.stroke()
+		cr.restore()
+
+	def scale(self, sx, sy):
+		cx_sum = 0
+		cy_sum = 0
+		k = 0
+		for obj in self.points:
+			cx_sum += obj.x
+			cy_sum += obj.y
+			k += 1
+
+		cx = cx_sum/k
+		cy = cy_sum/k
+
+		for obj in self.points:
+			scaled_matrix = self.tr_matrix.scale(sx, sy, obj.x, obj.y, cx, cy)
+			obj.x = scaled_matrix[0]
+			obj.y = scaled_matrix[1]
 
 
-	# def rotate(self, theta):
-	# 	cx_sum = 0
-	# 	cy_sum = 0
-	# 	k = 0
+	def traverse(self, dx, dy):
+		for obj in self.points:
+			traversed_matrix = self.tr_matrix.traverse(dx, dy, obj.x, obj.y)
+			obj.x = traversed_matrix[0]
+			obj.y = traversed_matrix[1]
 
-	# 	aux_list = []
 
-	# 	for obj in self.points:
-	# 		aux_tuple = (obj.x, obj.y)
-	# 		if aux_tuple not in aux_list:
-	# 			aux_list.append(aux_tuple)
+	def rotate(self, theta):
+		cx_sum = 0
+		cy_sum = 0
+		k = 0
 
-	# 	for obj in aux_list:		
-	# 		cx_sum += obj[0]
-	# 		cy_sum += obj[1]
+		aux_list = []
 
-	# 		k += 1
+		for obj in self.points:
+			aux_tuple = (obj.x, obj.y)
+			if aux_tuple not in aux_list:
+				aux_list.append(aux_tuple)
 
-	# 	cx = cx_sum/k
-	# 	cy = cy_sum/k
+		for obj in aux_list:		
+			cx_sum += obj[0]
+			cy_sum += obj[1]
 
-	# 	self.rotateArbitraryPoint(theta, cx, cy)
+			k += 1
+
+		cx = cx_sum/k
+		cy = cy_sum/k
+
+		self.rotateArbitraryPoint(theta, cx, cy)
 
 			
 
-	# def rotateArbitraryPoint(self, theta, cx, cy):
+	def rotateArbitraryPoint(self, theta, cx, cy):
 
-	# 	for obj in self.points:
-	# 		rotated_matrix = self.tr_matrix.rotate(theta, obj.x, obj.y, cx, cy)
-	# 		obj.x = rotated_matrix[0]
-	# 		obj.y = rotated_matrix[1]
+		for obj in self.points:
+			rotated_matrix = self.tr_matrix.rotate(theta, obj.x, obj.y, cx, cy)
+			obj.x = rotated_matrix[0]
+			obj.y = rotated_matrix[1]
 
-	# def rotate_scn(self, theta, cx, cy):
-	# 	i = 0
-	# 	while i < len(self.scn_points):
-	# 		rotated_matrix = self.tr_matrix.rotate(theta, self.points[i].x, self.points[i].y, cx, cy)
-	# 		self.scn_points[i].x = rotated_matrix[0]
-	# 		self.scn_points[i].y = rotated_matrix[1]
-	# 		i += 1
+	def rotate_scn(self, theta, cx, cy):
+		i = 0
+		while i < len(self.scn_points):
+			rotated_matrix = self.tr_matrix.rotate(theta, self.points[i].x, self.points[i].y, cx, cy)
+			self.scn_points[i].x = rotated_matrix[0]
+			self.scn_points[i].y = rotated_matrix[1]
+			i += 1
 
 
-	# def clip_wireframe(self, window: window.Window):
-	# 	clip = clipping.Clipping()
-	# 	aux = []
+	def clip_wireframe(self, window: window.Window):
+		clip = clipping.Clipping()
+		aux = []
+		i = 1
 
-	# 	for obj in self.lines:
-	# 		obj.clip_line(window)
-		# 	st = LinePoint(x1, y1)
-		# 	st.visible = v
-		# 	ed = LinePoint(x2, y2)
-		# 	ed.visible = v
-		# 	aux.append(st)
-		# 	if i == len(self.scn_points)-1:
-		# 		aux.append(ed)
-		# 	i += 1
+		while i < len(self.scn_points):
+			start = self.scn_points[i-1]
+			end = self.scn_points[i]
+			x_start = float(start.x)
+			y_start = float(start.y)
+			x_end = float(end.x)
+			y_end = float(end.y)
+			(v, x1, y1, x2, y2) = clip.cohen_sutherland(x_start, y_start, x_end, y_end, window)
+			st = LinePoint(x1, y1)
+			st.visible = v
+			ed = LinePoint(x2, y2)
+			ed.visible = v
+			aux.append(st)
+			if i == len(self.scn_points)-1:
+				aux.append(ed)
+			i += 1
 
-		# self.scn_points.clear()
-		# for obj in aux:
-		# 	x = float(obj.x)
-		# 	y = float(obj.y)
-		# 	new_lp = LinePoint(x, y)
-		# 	new_lp.visible = obj.visible
-		# 	self.scn_points.append(new_lp)
+		self.scn_points.clear()
+		for obj in aux:
+			x = float(obj.x)
+			y = float(obj.y)
+			new_lp = LinePoint(x, y)
+			new_lp.visible = obj.visible
+			self.scn_points.append(new_lp)
 
 
 class MatrixTransform:

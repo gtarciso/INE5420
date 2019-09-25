@@ -434,6 +434,8 @@ class NewObjectHandler:
 		object_rgb.append(rgba.green)
 		object_rgb.append(rgba.blue)
 
+		is_solid = self.builder.get_object("button_solid")
+
 		# if current page = 0, add point
 		if current_page == 0:
 			x = float(self.builder.get_object("entry_x_point").get_text())
@@ -467,7 +469,7 @@ class NewObjectHandler:
 			for obj in self.wireframe_points:
 				new_list.append(obj)
 
-			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe", object_rgb)
+			new_wireframe = objects.Wireframe(new_list, object_id, object_name, "Wireframe", object_rgb, is_solid.get_active())
 			new_wireframe.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
 
 			self.main_window.object_list.append([new_wireframe.object_id, new_wireframe.object_name, new_wireframe.object_type])
