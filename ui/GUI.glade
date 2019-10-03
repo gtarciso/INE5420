@@ -501,7 +501,6 @@
             <property name="receives_default">False</property>
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
-            <property name="group">rb_centro_mundo</property>
             <signal name="toggled" handler="on_rb_centro_objeto_toggled" swapped="no"/>
           </object>
           <packing>

@@ -501,7 +501,6 @@
             <property name="receives_default">False</property>
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
-            <property name="group">rb_centro_mundo</property>
             <signal name="toggled" handler="on_rb_centro_objeto_toggled" swapped="no"/>
           </object>
           <packing>
@@ -639,6 +638,21 @@
           <packing>
             <property name="x">865</property>
             <property name="y">240</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="reset_window_button">
+            <property name="label" translatable="yes">Reset</property>
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="reset_window_button_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">900</property>
+            <property name="y">300</property>
           </packing>
         </child>
       </object>
