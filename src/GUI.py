@@ -384,6 +384,11 @@ class MainWindowHandler:
 
 				obj.draw_wireframe(cr, self.viewport)
 
+			elif obj.object_type == "Curve":
+				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
+				obj.clip_curve(self.window)
+
+				obj.draw_curve(cr, self.viewport)
 
 	def append_log(self, text):
 		log_buffer = self.log.get_buffer()
@@ -422,9 +427,10 @@ class NewObjectHandler:
 			object_id = self.main_window.available_id[0]
 			self.main_window.available_id.pop(0)
 
-		print(self.main_window.object_id)
+		if object_name == "":
+			object_name = "object"+str(object_id)
+			print(object_id)
 		current_page = self.builder.get_object("notebook_object").get_current_page()
-		print(current_page)
 
 		color = self.builder.get_object("color_button")
 		rgba = color.get_rgba()
@@ -478,6 +484,32 @@ class NewObjectHandler:
 
 			self.wireframe_points.clear()
 
+
+		if current_page == 3:
+			x1 = float(self.builder.get_object("x1_bezier_entry").get_text())
+			x2 = float(self.builder.get_object("x2_bezier_entry").get_text())
+			x3 = float(self.builder.get_object("x3_bezier_entry").get_text())
+			x4 = float(self.builder.get_object("x4_bezier_entry").get_text())
+			y1 = float(self.builder.get_object("y1_bezier_entry").get_text())
+			y2 = float(self.builder.get_object("y2_bezier_entry").get_text())
+			y3 = float(self.builder.get_object("y3_bezier_entry").get_text())
+			y4 = float(self.builder.get_object("y4_bezier_entry").get_text())
+
+			points = []
+
+			points.append(objects.LinePoint(x1, y1))
+			points.append(objects.LinePoint(x2, y2))
+			points.append(objects.LinePoint(x3, y3))
+			points.append(objects.LinePoint(x4, y4))
+
+			new_curve = objects.Curve(points, object_id, object_name, "Curve", object_rgb, "bezier")
+			new_curve.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
+			self.main_window.object_list.append([new_curve.object_id, new_curve.object_name, new_curve.object_type])
+			self.main_window.append_log("Object " + new_curve.object_name + " (" + new_curve.object_type + ") created")
+			self.main_window.saved_objects.append(new_curve)
+
+
+		self.wireframe_points.clear()
 
 		cr = self.darea.get_window().cairo_create()
 		self.darea.draw(cr)

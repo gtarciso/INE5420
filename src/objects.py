@@ -219,8 +219,13 @@ class Wireframe(Object):
 				i += 1	
 
 
+		n = len(self.lines)-1
 		if self.is_solid:
-			cr.fill()
+			# to check if a solid object is really solid
+			if self.lines[0].start_point.x != self.lines[n].end_point.x or self.lines[0].start_point.y != self.lines[n].end_point.y:
+				cr.stroke()
+			else:
+				cr.fill()
 		else:
 			cr.stroke()
 
@@ -310,6 +315,259 @@ class Wireframe(Object):
 	def rotateArbitraryPoint(self, theta, cx, cy):
 		for obj in self.lines:
 			obj.rotateArbitraryPoint(theta, cx, cy)
+
+
+
+class Curve(Object):
+
+	def __init__(self, points, object_id, object_name, object_type, object_rgb, curve_type):
+		super().__init__(object_id, object_name, object_type, object_rgb)
+		self.points = points
+		self.lines = []
+		self.curve_type = curve_type
+		#self.scn_lines = []
+		if curve_type == "bezier":
+			self.generate_bezier_curve()
+
+
+	def generate_bezier_curve(self):
+		mb = np.array(( [-1, 3, -3, 1],
+						[3, -6,  3, 0],
+						[-3, 3,  0, 0],
+						[1,  0,  0, 0]), dtype = float)
+
+		gx = np.array(( [float(self.points[0].x)],
+						[float(self.points[1].x)],
+						[float(self.points[2].x)],
+						[float(self.points[3].x)]), dtype = float)
+
+		gy = np.array(( [float(self.points[0].y)],
+						[float(self.points[1].y)],
+						[float(self.points[2].y)],
+						[float(self.points[3].y)]), dtype = float)
+
+		epsilon = 0.01
+		i = 0
+
+		x_ant = self.points[0].x
+		y_ant = self.points[0].y
+
+		while i < 1.0:
+			t = self.get_t(i)
+			aux = np.dot(t, mb)
+			x_aux = np.dot(aux, gx)
+			y_aux = np.dot(aux, gy)
+
+			self.lines.append(Line(LinePoint(x_ant, y_ant), LinePoint(x_aux, y_aux), self.object_id, self.object_name, "", self.object_rgb))
+			#self.scn_lines.append(Line(LinePoint(x_ant, y_ant), LinePoint(x_aux, y_aux), self.object_id, self.object_name, "", self.object_rgb))
+
+			x_ant = x_aux
+			y_ant = y_aux
+
+			i += epsilon
+
+
+
+	def get_t(self, t1):
+		t2 = t1*t1
+		t3 = t2*t1
+		mt = np.array(([t3, t2, t1, 1]), dtype = float)
+		return mt
+
+	def reset_scn(self):
+		for obj in self.lines:
+			obj.reset_scn()
+
+
+	def draw_curve(self, cr, viewport: viewport.Viewport):
+
+		r = self.object_rgb[0]
+		g = self.object_rgb[1]
+		b = self.object_rgb[2]
+		cr.save()
+		cr.set_source_rgb(r, g, b)
+		cr.set_line_width(1)
+		initial_point = None
+		i = 0
+		while i < len(self.lines):
+			if self.lines[i].visible:
+				initial_point = self.lines[i].scn_start
+				break
+			i += 1
+
+		if initial_point != None:
+
+			cr.move_to(viewport.transformX(float(initial_point.x)), viewport.transformY(float(initial_point.y)))
+			while i < len(self.lines):	
+				if self.lines[i].visible:
+					cr.line_to(viewport.transformX(self.lines[i].scn_start.x), viewport.transformY(self.lines[i].scn_start.y))
+					cr.line_to(viewport.transformX(self.lines[i].scn_end.x), viewport.transformY(self.lines[i].scn_end.y))
+
+				i += 1	
+		
+		cr.stroke()
+		cr.restore()
+
+
+	def rotate_scn(self, theta, cx, cy):
+		for obj in self.lines:
+			obj.rotate_scn(theta, cx, cy)
+
+
+	def clip_curve(self, window: window.Window):
+		clip = clipping.Clipping()
+
+		for obj in self.lines:
+			obj.clip_line(window)
+
+
+	def traverse(self, dx, dy):
+		for obj in self.lines:
+			obj.traverse(dx, dy)
+
+
+	def rotateArbitraryPoint(self, theta, cx, cy):
+		for obj in self.lines:
+			obj.rotateArbitraryPoint(theta, cx, cy)
+
+
+	def rotate(self, theta):
+		#initial_point = self.points[0]
+		#end_point = self.points[3]
+		#cx = (initial_point.x + end_point.x)/2
+		#cy = (initial_point.y + end_point.y)/2
+
+		cx_sum = 0
+		cy_sum = 0
+		k = 0
+
+		aux_list = []
+
+		for obj in self.lines:
+			aux_tuple = (obj.start_point.x, obj.start_point.y)
+			if aux_tuple not in aux_list:
+				aux_list.append(aux_tuple)
+
+			aux_tuple = (obj.end_point.x, obj.end_point.y)
+			if aux_tuple not in aux_list:
+				aux_list.append(aux_tuple)
+
+
+		for obj in aux_list:		
+			cx_sum += obj[0]
+			cy_sum += obj[1]
+
+			k += 1
+
+		cx = cx_sum/k
+		cy = cy_sum/k
+
+		for obj in self.lines:
+			obj.rotateArbitraryPoint(theta, cx, cy)
+
+			
+
+	def scale(self, sx, sy):
+		cx_sum = 0
+		cy_sum = 0
+		k = 0
+
+		aux_list = []
+
+		for obj in self.lines:
+			aux_tuple = (obj.start_point.x, obj.start_point.y)
+			#if aux_tuple not in aux_list:
+			aux_list.append(aux_tuple)
+
+			aux_tuple = (obj.end_point.x, obj.end_point.y)
+			#if aux_tuple not in aux_list:
+			aux_list.append(aux_tuple)
+
+
+		for obj in aux_list:		
+			cx_sum += obj[0]
+			cy_sum += obj[1]
+
+			k += 1
+
+		cx = cx_sum/k
+		cy = cy_sum/k
+
+		for obj in self.lines:
+			matrix_init = self.tr_matrix.scale(sx, sy, obj.start_point.x, obj.start_point.y, cx, cy)
+
+			obj.start_point.x = matrix_init[0]
+			obj.start_point.y = matrix_init[1]
+
+			matrix_end = self.tr_matrix.scale(sx, sy, obj.end_point.x, obj.end_point.y, cx, cy)
+
+			obj.end_point.x = matrix_end[0]
+			obj.end_point.y = matrix_end[1]
+
+
+class MatrixTransform:
+
+	def scale(self, sx, sy, x, y, cx, cy):
+		tr_mt1 = np.array((
+			[ 1 ,  0 , 0],
+			[ 0 ,  1 , 0],
+			[-cx, -cy, 1]), dtype = float)
+
+		tr_mt2 = np.array((
+			[1 , 0 , 0],
+			[0 , 1 , 0],
+			[cx, cy, 1]), dtype = float)
+
+		param_matrix = np.array((
+			[sx, 0, 0],
+			[0, sy, 0],
+			[0, 0 , 1]), dtype = float)
+
+		point_matrix = np.array(([x, y, 1]), dtype = float)
+		aux_matrix = np.dot(point_matrix, tr_mt1)
+		aux_matrix = np.dot(aux_matrix, param_matrix)
+		scaled_matrix = np.dot(aux_matrix, tr_mt2)
+
+		return scaled_matrix
+
+	def traverse(self, dx, dy, x, y):
+		param_matrix = np.array((
+			[1,  0 , 0],
+			[0,  1 , 1],
+			[dx, dy, 1]), dtype = float)
+
+		point_matrix = np.array(([x, y, 1]), dtype = float)
+		traversed_matrix = np.dot(point_matrix, param_matrix)
+
+		return traversed_matrix
+
+	def rotate(self, theta, x, y, cx, cy):
+		sin = np.sin(theta) 
+		cos = np.cos(theta)
+
+		tr_mt1 = np.array((
+			[ 1 ,  0 , 0],
+			[ 0 ,  1 , 0],
+			[-cx, -cy, 1]), dtype = float)
+
+		tr_mt2 = np.array((
+			[1 , 0 , 0],
+			[0 , 1 , 0],
+			[cx, cy, 1]), dtype = float)
+
+		param_matrix = np.array((
+			[cos, -sin, 0],
+			[sin,  cos, 0],
+			[ 0 ,   0 , 1]), dtype = float)
+
+		point_matrix = np.array(([x, y, 1]), dtype = float)
+
+		aux_matrix = np.dot(point_matrix, tr_mt1)
+		aux_matrix = np.dot(aux_matrix, param_matrix)
+		rotated_matrix = np.dot(aux_matrix, tr_mt2)
+
+		return rotated_matrix
+
 
 
 #################################################################################################################################
@@ -452,66 +710,3 @@ class Wireframe1(Object):
 			new_lp.visible = obj.visible
 			self.scn_points.append(new_lp)
 
-
-class MatrixTransform:
-
-	def scale(self, sx, sy, x, y, cx, cy):
-		tr_mt1 = np.array((
-			[ 1 ,  0 , 0],
-			[ 0 ,  1 , 0],
-			[-cx, -cy, 1]), dtype = float)
-
-		tr_mt2 = np.array((
-			[1 , 0 , 0],
-			[0 , 1 , 0],
-			[cx, cy, 1]), dtype = float)
-
-		param_matrix = np.array((
-			[sx, 0, 0],
-			[0, sy, 0],
-			[0, 0 , 1]), dtype = float)
-
-		point_matrix = np.array(([x, y, 1]), dtype = float)
-		aux_matrix = np.dot(point_matrix, tr_mt1)
-		aux_matrix = np.dot(aux_matrix, param_matrix)
-		scaled_matrix = np.dot(aux_matrix, tr_mt2)
-
-		return scaled_matrix
-
-	def traverse(self, dx, dy, x, y):
-		param_matrix = np.array((
-			[1,  0 , 0],
-			[0,  1 , 1],
-			[dx, dy, 1]), dtype = float)
-
-		point_matrix = np.array(([x, y, 1]), dtype = float)
-		traversed_matrix = np.dot(point_matrix, param_matrix)
-
-		return traversed_matrix
-
-	def rotate(self, theta, x, y, cx, cy):
-		sin = np.sin(theta) 
-		cos = np.cos(theta)
-
-		tr_mt1 = np.array((
-			[ 1 ,  0 , 0],
-			[ 0 ,  1 , 0],
-			[-cx, -cy, 1]), dtype = float)
-
-		tr_mt2 = np.array((
-			[1 , 0 , 0],
-			[0 , 1 , 0],
-			[cx, cy, 1]), dtype = float)
-
-		param_matrix = np.array((
-			[cos, -sin, 0],
-			[sin,  cos, 0],
-			[ 0 ,   0 , 1]), dtype = float)
-
-		point_matrix = np.array(([x, y, 1]), dtype = float)
-
-		aux_matrix = np.dot(point_matrix, tr_mt1)
-		aux_matrix = np.dot(aux_matrix, param_matrix)
-		rotated_matrix = np.dot(aux_matrix, tr_mt2)
-
-		return rotated_matrix
