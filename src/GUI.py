@@ -405,6 +405,7 @@ class NewObjectHandler:
 		self.object_window = object_window
 		self.darea = main_window.darea
 		self.wireframe_points = []
+		self.bspline_points = []
 
 
 	def on_window_new_object_destroy(self, object, data=None):				
@@ -505,11 +506,28 @@ class NewObjectHandler:
 			new_curve = objects.Curve(points, object_id, object_name, "Curve", object_rgb, "bezier")
 			new_curve.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
 			self.main_window.object_list.append([new_curve.object_id, new_curve.object_name, new_curve.object_type])
-			self.main_window.append_log("Object " + new_curve.object_name + " (" + new_curve.object_type + ") created")
+			self.main_window.append_log("Object " + new_curve.object_name + " (Bezier " + new_curve.object_type + ") created")
 			self.main_window.saved_objects.append(new_curve)
+
+		if current_page == 4:
+			if len(self.bspline_points) >= 4:
+				new_list = []
+
+				for obj in self.bspline_points:
+					new_list.append(obj)
+
+				new_bspline = objects.Curve(new_list, object_id, object_name, "Curve", object_rgb, "b-spline")
+				new_bspline.rotate_scn(-self.main_window.window.theta, self.main_window.window.window_center.x, self.main_window.window.window_center.y)
+				self.main_window.object_list.append([new_bspline.object_id, new_bspline.object_name, new_bspline.object_type])
+				self.main_window.append_log("Object " + new_bspline.object_name + " (B-Spline " + new_bspline.object_type + ") created")
+				self.main_window.saved_objects.append(new_bspline)
+			else:
+				self.main_window.append_log("Insuficient points to generate a b-spline curve")
+				self.main_window.append_log("Try again with at least 4 points")
 
 
 		self.wireframe_points.clear()
+		self.bspline_points.clear()
 
 		cr = self.darea.get_window().cairo_create()
 		self.darea.draw(cr)
@@ -524,3 +542,13 @@ class NewObjectHandler:
 		new_point = objects.LinePoint(x, y)
 
 		self.wireframe_points.append(new_point)
+
+
+	def button_add_curve_point_clicked_cb(self, widget):
+
+		x = float(self.builder.get_object("entry_x_curve").get_text())
+		y = float(self.builder.get_object("entry_y_curve").get_text())
+		self.main_window.append_log("Point (" + str(x) + ", " + str(y) + ") added to the b-spline curve")
+
+		new_point = objects.LinePoint(x, y)
+		self.bspline_points.append(new_point)

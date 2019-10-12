@@ -329,6 +329,83 @@ class Curve(Object):
 		if curve_type == "bezier":
 			self.generate_bezier_curve()
 
+		if curve_type == "b-spline":
+			self.generate_bspline_curve()
+
+	def generate_bspline_curve(self):
+		mbs = np.array(([-1, 3, -3, 1],
+						[ 3,-6,  3, 0],
+						[-3, 0,  3, 0],
+						[ 1, 4,  1, 0]), dtype = float)
+
+		mbs = mbs/6
+		
+		i = 3
+		dif = 0.01
+		dif2 = dif*dif
+		dif3 = dif2*dif
+
+		md = np.array(( [  0 ,  0  ,   0 ,   1],
+						[dif3, dif2, dif , 0  ],
+						[6*dif3, 2*dif2, 0,  0],
+						[6*dif3,   0,   0,   0],), dtype = float)
+
+
+		#####################################################################
+		#                 FORWARD DIFFERENCES IMPLEMENTATION                #
+		#####################################################################
+
+		while i < len(self.points):
+
+			gx = np.array(( [float(self.points[i-3].x)],
+							[float(self.points[i-2].x)],
+							[float(self.points[i-1].x)],
+							[float(self.points[i  ].x)]), dtype = float)
+
+			gy = np.array(( [float(self.points[i-3].y)],
+							[float(self.points[i-2].y)],
+							[float(self.points[i-1].y)],
+							[float(self.points[i  ].y)]), dtype = float) 
+
+
+			cx = np.dot(mbs, gx)
+			cy = np.dot(mbs, gy)
+
+
+			dx = np.dot(md, cx)
+			dy = np.dot(md, cy)
+
+
+			j = 0
+
+			x_ant = dx[0]
+			d1x = dx[1]
+			d2x = dx[2]
+			d3x = dx[3]
+
+			y_ant = dy[0]
+			d1y = dy[1]
+			d2y = dy[2]
+			d3y = dy[3]
+
+			x = x_ant
+			y = y_ant
+
+			while j < 1.0:
+				j += dif
+				x = x + d1x
+				d1x = d1x + d2x
+				d2x = d2x + d3x
+				y = y + d1y
+				d1y = d1y + d2y
+				d2y = d2y + d3y
+				self.lines.append(Line(LinePoint(x_ant, y_ant), LinePoint(x, y), self.object_id, self.object_name, "", self.object_rgb))
+				x_ant = x
+				y_ant = y
+
+
+			i += 1
+
 
 	def generate_bezier_curve(self):
 		mb = np.array(( [-1, 3, -3, 1],
@@ -347,12 +424,12 @@ class Curve(Object):
 						[float(self.points[3].y)]), dtype = float)
 
 		epsilon = 0.01
-		i = 0
+		i = 0.0
 
-		x_ant = self.points[0].x
-		y_ant = self.points[0].y
+		x_ant = float(self.points[0].x)
+		y_ant = float(self.points[0].y)
 
-		while i < 1.0:
+		while i <= 1.0:
 			t = self.get_t(i)
 			aux = np.dot(t, mb)
 			x_aux = np.dot(aux, gx)
@@ -365,6 +442,11 @@ class Curve(Object):
 			y_ant = y_aux
 
 			i += epsilon
+
+		x_end = float(self.points[3].x)
+		y_end = float(self.points[3].y)
+
+		self.lines.append(Line(LinePoint(x_ant, y_ant), LinePoint(x_end, y_end), self.object_id, self.object_name, "", self.object_rgb))
 
 
 
@@ -380,7 +462,6 @@ class Curve(Object):
 
 
 	def draw_curve(self, cr, viewport: viewport.Viewport):
-
 		r = self.object_rgb[0]
 		g = self.object_rgb[1]
 		b = self.object_rgb[2]
@@ -465,7 +546,7 @@ class Curve(Object):
 		for obj in self.lines:
 			obj.rotateArbitraryPoint(theta, cx, cy)
 
-			
+
 
 	def scale(self, sx, sy):
 		cx_sum = 0
