@@ -2,19 +2,16 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkMessageDialog" id="bspline_insuficient_points">
-    <property name="width_request">350</property>
-    <property name="height_request">100</property>
+  <object class="GtkMessageDialog" id="bspline_error">
+    <property name="width_request">400</property>
+    <property name="height_request">150</property>
     <property name="can_focus">False</property>
-    <property name="type">popup</property>
-    <property name="window_position">center</property>
-    <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
-    <property name="gravity">center</property>
     <property name="message_type">error</property>
     <property name="buttons">ok</property>
-    <property name="text">Insuficient points to generate a b-spline!
-Try again with at least 4 points.</property>
+    <property name="text">Insufficient points to generate b-spline curve!</property>
+    <property name="secondary_text" translatable="yes">Try again with at least 4 points</property>
+    <signal name="button-press-event" handler="on_bspline_error_button_press_event" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>

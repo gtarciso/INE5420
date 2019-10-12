@@ -522,6 +522,9 @@ class NewObjectHandler:
 				self.main_window.append_log("Object " + new_bspline.object_name + " (B-Spline " + new_bspline.object_type + ") created")
 				self.main_window.saved_objects.append(new_bspline)
 			else:
+				self.errordialog = self.builder.get_object("bspline_error")
+				self.errordialog.run()
+				self.errordialog.destroy()
 				self.main_window.append_log("Insuficient points to generate a b-spline curve")
 				self.main_window.append_log("Try again with at least 4 points")
 
@@ -552,3 +555,6 @@ class NewObjectHandler:
 
 		new_point = objects.LinePoint(x, y)
 		self.bspline_points.append(new_point)
+
+
+
