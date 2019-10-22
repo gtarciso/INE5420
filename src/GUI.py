@@ -2,10 +2,14 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import cairo
+from gi.repository import GObject
 
 import objects
 import window
 import viewport
+import descriptorOBJ
+
+#import gtk
 
 import numpy as np
 
@@ -91,24 +95,63 @@ class MainWindowHandler:
 		self.object_window.show_all()
 
 
+	def load_object_button_clicked_cb(self, widget):
+		self.dlg = Gtk.FileChooserDialog(None, None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+		self.response = self.dlg.run()
+		file_name = self.dlg.get_filename()
+		if self.response == Gtk.ResponseType.OK:
+			self.main_window.append_log("From file " + file_name + " loaded the objects:")
+
+
+		if self.response == Gtk.ResponseType.CANCEL:
+			self.main_window.append_log("Failed to load from file")
+
+		self.dlg.destroy()
+		self.object_id += 1
+		(objects, window_atr) = descriptorOBJ.objectDescriptor.load_file(file_name, self.object_id)
+		self.window.set_atributes(window_atr[0], window_atr[1], window_atr[2], window_atr[3])
+		for obj in objects:
+			obj_id = int(obj.object_id)
+			obj_name = str(obj.object_name)
+			obj_type = str(obj.object_type)
+			self.main_window.append_log("Object " + obj_name + " loaded")
+			self.object_list.append([obj_id, obj_name, obj_type])
+			self.saved_objects.append(obj)
+
+
+		#self.text.set_text(dlg.get_filename())
+
+
 	def delete_object_button_clicked_cb(self, widget):
 		print("delete")
 		tree_view = self.builder.get_object("list_obj_created")
 		(model, path) = tree_view.get_selection().get_selected_rows()
+		old_obj_id = -1
 
 		for val in path:
 			it = model.get_iter(path)
 			object_id = int(model.get_value(it, 0))
+			old_obj_id = int(object_id)
+			obj_name = str(model.get_value(it, 1))
 
 			for i in range(len(self.saved_objects)):
-				if self.saved_objects[i].object_id == object_id:
+				if self.saved_objects[i].object_id == object_id and self.saved_objects[i].object_name == obj_name:
 					self.main_window.append_log("Object " + self.saved_objects[i].object_name + 
 						" (" + self.saved_objects[i].object_type + ") deleted")
 					self.saved_objects.pop(i)
-					self.available_id.append(object_id)
 					break
 
 			model.remove(it)
+
+
+		flag_found = 0
+
+		for i in range(len(self.saved_objects)):
+			if self.saved_objects[i].object_id == old_obj_id:
+				flag_found = 1
+
+		if flag_found == 0:
+			self.available_id.append(old_obj_id)
 
 		
 
@@ -141,9 +184,12 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
-					break
+					if self.saved_objects[obj_id].object_type == "3D Object":
+						self.saved_objects[obj_id].scale(step_entry, step_entry, step_entry)
+					else:
+						self.saved_objects[obj_id].scale(step_entry, step_entry)
+					
 
-		self.saved_objects[obj_id].scale(step_entry, step_entry)
 		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 		self.darea.queue_draw()
 
@@ -160,10 +206,76 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
-					break
+					if self.saved_objects[obj_id].object_type == "3D Object":
+						self.saved_objects[obj_id].scale(1/step_entry, 1/step_entry, 1/step_entry)
+					else:
+						self.saved_objects[obj_id].scale(1/step_entry, 1/step_entry)
+					
 
-		self.saved_objects[obj_id].scale(1/step_entry, 1/step_entry)
 		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+		self.darea.queue_draw()
+
+
+	def x_rotate_3d_clicked_cb(self, widget):
+
+		angle_entry = float(self.builder.get_object("angle_entry_3d").get_text())
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		theta = (angle_entry/180)*np.pi
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					self.saved_objects[obj_id].rotate_x(theta)
+
+		self.main_window.append_log("Object rotated about x-axis")
+
+		self.darea.queue_draw()
+
+
+	def y_rotate_3d_clicked_cb(self, widget):
+		angle_entry = float(self.builder.get_object("angle_entry_3d").get_text())
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		theta = (angle_entry/180)*np.pi
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					self.saved_objects[obj_id].rotate_y(theta)
+
+		self.main_window.append_log("Object rotated about y-axis")
+		self.darea.queue_draw()
+
+
+	def z_rotate_3d_clicked_cb(self, widget):
+		angle_entry = float(self.builder.get_object("angle_entry_3d").get_text())
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		theta = (angle_entry/180)*np.pi
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					self.saved_objects[obj_id].rotate_z(theta)
+
+		
+		self.main_window.append_log("Object rotated about z-axis")
 		self.darea.queue_draw()
 
 
@@ -219,10 +331,13 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
-					break
+					if self.saved_objects[obj_id].object_type == "3D Object":
+						self.saved_objects[obj_id].traverse(0, step_entry, 0)
+					else:
+						self.saved_objects[obj_id].traverse(0, step_entry)
+						
 
 
-		self.saved_objects[obj_id].traverse(0, step_entry)
 		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
@@ -241,10 +356,12 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
-					break
+					if self.saved_objects[obj_id].object_type == "3D Object":
+						self.saved_objects[obj_id].traverse(-step_entry, 0, 0)
+					else:
+						self.saved_objects[obj_id].traverse(-step_entry, 0)
 
 
-		self.saved_objects[obj_id].traverse(-step_entry, 0)
 		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
@@ -262,9 +379,12 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
-					break
+					if self.saved_objects[obj_id].object_type == "3D Object":
+						self.saved_objects[obj_id].traverse(step_entry, 0, 0)
+					else:
+						self.saved_objects[obj_id].traverse(step_entry, 0)
 
-		self.saved_objects[obj_id].traverse(step_entry, 0)
+		
 		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
@@ -282,10 +402,12 @@ class MainWindowHandler:
 			for i in range(len(self.saved_objects)):
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
-					break
+					if self.saved_objects[obj_id].object_type == "3D Object":
+						self.saved_objects[obj_id].traverse(0, -step_entry, 0)
+					else:
+						self.saved_objects[obj_id].traverse(0, -step_entry)
 
 		
-		self.saved_objects[obj_id].traverse(0, -step_entry)
 		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
@@ -389,6 +511,10 @@ class MainWindowHandler:
 				obj.clip_curve(self.window)
 
 				obj.draw_curve(cr, self.viewport)
+
+			elif obj.object_type == "3D Object":
+
+				obj.draw_object(cr, self.viewport)
 
 	def append_log(self, text):
 		log_buffer = self.log.get_buffer()
@@ -525,7 +651,7 @@ class NewObjectHandler:
 				self.errordialog = self.builder.get_object("bspline_error")
 				self.errordialog.run()
 				self.errordialog.destroy()
-				self.main_window.append_log("Insuficient points to generate a b-spline curve")
+				self.main_window.append_log("Insufficient points to generate a b-spline curve")
 				self.main_window.append_log("Try again with at least 4 points")
 
 

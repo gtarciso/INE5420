@@ -59,5 +59,11 @@ class Window:
 	def rotate(self, theta):
 		self.theta += theta
 
+	def set_atributes(self, x1, x2, y1, y2):
+		self.x_min = x1
+		self.x_max = x2
+		self.y_min = y1
+		self.y_max = y2
+
 
 

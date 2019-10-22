@@ -161,7 +161,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="action_name">load_object</property>
+            <signal name="clicked" handler="load_object_button_clicked_cb" swapped="no"/>
           </object>
           <packing>
             <property name="x">170</property>
@@ -653,6 +653,90 @@
           <packing>
             <property name="x">900</property>
             <property name="y">300</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="3d_rotations">
+            <property name="width_request">220</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">3D Rotations</property>
+          </object>
+          <packing>
+            <property name="x">810</property>
+            <property name="y">450</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="3d_angle">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Angle</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">480</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="angle_entry_3d">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">900</property>
+            <property name="y">480</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="x_rotate_3d">
+            <property name="label" translatable="yes">X</property>
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="x_rotate_3d_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">520</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="y_rotate_3d">
+            <property name="label" translatable="yes">Y</property>
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="y_rotate_3d_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">900</property>
+            <property name="y">520</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="z_rotate_3d">
+            <property name="label" translatable="yes">Z</property>
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="z_rotate_3d_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">970</property>
+            <property name="y">520</property>
           </packing>
         </child>
       </object>
