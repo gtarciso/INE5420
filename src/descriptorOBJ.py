@@ -80,9 +80,6 @@ class objectDescriptor():
 		return (objects, window)
 
 
-		
-					
-
 
 	def save_file(self, file_name, window: window.Window, objects):
 		with open(file_name, "w+") as f:

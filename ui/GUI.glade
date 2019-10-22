@@ -739,6 +739,36 @@
             <property name="y">520</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="z_in_button">
+            <property name="label" translatable="yes">z+</property>
+            <property name="width_request">50</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="z_in_button_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">10</property>
+            <property name="y">320</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="z_out_button">
+            <property name="label" translatable="yes">z-</property>
+            <property name="width_request">50</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="z_out_button_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">10</property>
+            <property name="y">390</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

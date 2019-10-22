@@ -189,8 +189,9 @@ class MainWindowHandler:
 					else:
 						self.saved_objects[obj_id].scale(step_entry, step_entry)
 					
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
-		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+
 		self.darea.queue_draw()
 
 	def out_button_clicked_cb(self, widget):
@@ -211,8 +212,8 @@ class MainWindowHandler:
 					else:
 						self.saved_objects[obj_id].scale(1/step_entry, 1/step_entry)
 					
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
-		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 		self.darea.queue_draw()
 
 
@@ -232,8 +233,9 @@ class MainWindowHandler:
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
 					self.saved_objects[obj_id].rotate_x(theta)
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
-		self.main_window.append_log("Object rotated about x-axis")
+		self.main_window.append_log("Object rotated around x-axis")
 
 		self.darea.queue_draw()
 
@@ -253,8 +255,9 @@ class MainWindowHandler:
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
 					self.saved_objects[obj_id].rotate_y(theta)
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
-		self.main_window.append_log("Object rotated about y-axis")
+		self.main_window.append_log("Object rotated around y-axis")
 		self.darea.queue_draw()
 
 
@@ -273,9 +276,10 @@ class MainWindowHandler:
 				if self.saved_objects[i].object_id == object_id:
 					obj_id = i
 					self.saved_objects[obj_id].rotate_z(theta)
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		
-		self.main_window.append_log("Object rotated about z-axis")
+		self.main_window.append_log("Object rotated around z-axis")
 		self.darea.queue_draw()
 
 
@@ -317,6 +321,43 @@ class MainWindowHandler:
 
 
 
+	def z_in_button_clicked_cb(self, widget):
+		step_entry = float(self.builder.get_object("step_entry").get_text())
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					self.saved_objects[obj_id].traverse(0, 0, step_entry)
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+
+		self.darea.queue_draw()
+
+
+	def z_out_button_clicked_cb(self, widget):
+		step_entry = float(self.builder.get_object("step_entry").get_text())
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					self.saved_objects[obj_id].traverse(0, 0, -step_entry)
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+
+		self.darea.queue_draw()
+					
 
 	def up_button_clicked_cb(self, widget):
 		step_entry = float(self.builder.get_object("step_entry").get_text())
@@ -335,10 +376,9 @@ class MainWindowHandler:
 						self.saved_objects[obj_id].traverse(0, step_entry, 0)
 					else:
 						self.saved_objects[obj_id].traverse(0, step_entry)
+
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 						
-
-
-		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -361,8 +401,8 @@ class MainWindowHandler:
 					else:
 						self.saved_objects[obj_id].traverse(-step_entry, 0)
 
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
-		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -384,8 +424,8 @@ class MainWindowHandler:
 					else:
 						self.saved_objects[obj_id].traverse(step_entry, 0)
 
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 		
-		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -407,8 +447,8 @@ class MainWindowHandler:
 					else:
 						self.saved_objects[obj_id].traverse(0, -step_entry)
 
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 		
-		self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
 
 		self.darea.queue_draw()
 
@@ -513,7 +553,8 @@ class MainWindowHandler:
 				obj.draw_curve(cr, self.viewport)
 
 			elif obj.object_type == "3D Object":
-
+				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
+				obj.clip_object(self.window)
 				obj.draw_object(cr, self.viewport)
 
 	def append_log(self, text):

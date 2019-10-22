@@ -64,6 +64,7 @@ class Window:
 		self.x_max = x2
 		self.y_min = y1
 		self.y_max = y2
+		self.window_center = objects.LinePoint((self.x_max - self.x_min)/2, (self.y_max - self.y_min)/2)
 
 
 

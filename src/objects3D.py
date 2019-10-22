@@ -1,6 +1,7 @@
 import objects
 import viewport
 import window
+import clipping
 import numpy as np
 
 class Point3D(objects.Object):
@@ -48,14 +49,37 @@ class Point3D(objects.Object):
 		self.y = rotated_matrix[1]
 		self.z = rotated_matrix[2]
 
-	def rotateArbitraryPoint(self, theta, x, y):
-		print("TODO")
+	# fazer depois... ou não rs
+	def rotateArbitraryPoint(self, theta, x, y, z):
+		tx = self.x
+		ty = self.y
+		tz = self.z
+
+		# tr_inv =  np.array((
+		# 				[ 1 ,  0 , 0, 0],
+		# 				[ 0 ,  1 , 0, 0],
+		# 				[ 0 ,  0 , 1, 0],
+		# 				[-tx, -ty, -tz, 1]), dtype = float)
+		# tr =  np.array((
+		# 				[ 1 ,  0 , 0, 0],
+		# 				[ 0 ,  1 , 0, 0],
+		# 				[ 0 ,  0 , 1, 0],
+		# 				[ tx, ty, tz, 1]), dtype = float)
+
+		# aux_matrix = np.dot(point_matrix, tr_inv)
+		# aux_matrix = MatrixTransform3D.rotate_x(theta, )
+
 
 	def rotate_scn(self, theta, cx, cy):
-		print("TODO")
+		tr_matrix = objects.MatrixTransform()
+		rotated_matrix = tr_matrix.rotate(theta, self.x, self.y, cx, cy)
+		self.scn_x = rotated_matrix[0]
+		self.scn_y = rotated_matrix[1]
+		
 
 	def clip_point(self, window: window.Window):
-		print("TODO")
+		clip = clipping.Clipping()
+		self.visible = clip.point_clipping(self.scn_x, self.scn_y, window)
 
 
 # lines as list of tuples of 3dpoints?
@@ -71,6 +95,11 @@ class Object3D(objects.Object):
 		super().__init__(object_id, object_name, object_type, object_rgb)
 		self.lines = lines
 
+	def reset_scn(self):
+		for obj in self.lines:
+			obj.init.reset_scn()
+			obj.end.reset_scn()
+
 	def draw_object(self, cr, viewport: viewport.Viewport):
 		r = self.object_rgb[0]
 		g = self.object_rgb[1]
@@ -79,13 +108,28 @@ class Object3D(objects.Object):
 		cr.set_source_rgb(r, g, b)
 		cr.set_line_width(0.1)
 		for obj in self.lines:
-			#cr.move_to(viewport.transformX(obj.init.scn_x), viewport.transformY(obj.init.scn_y))
-			#cr.line_to(viewport.transformX(obj.end.scn_x), viewport.transformY(obj.end.scn_y))
-			cr.move_to(viewport.transformX(obj.init.x), viewport.transformY(obj.init.y))
-			cr.line_to(viewport.transformX(obj.end.x), viewport.transformY(obj.end.y))
+			if obj.visible:
+				cr.move_to(viewport.transformX(obj.init.scn_x), viewport.transformY(obj.init.scn_y))
+				cr.line_to(viewport.transformX(obj.end.scn_x), viewport.transformY(obj.end.scn_y))
+				#cr.move_to(viewport.transformX(obj.init.x), viewport.transformY(obj.init.y))
+				#cr.line_to(viewport.transformX(obj.end.x), viewport.transformY(obj.end.y))
 
 		cr.stroke()
 		cr.restore()
+
+	def clip_object(self, window: window.Window):
+		for obj in self.lines:
+			clip = clipping.Clipping()
+			x_start = obj.init.scn_x
+			y_start = obj.init.scn_y
+			x_end = obj.end.scn_x
+			y_end = obj.end.scn_y
+			(visible, x1, y1, x2, y2) = clip.cohen_sutherland(x_start, y_start, x_end, y_end, window)
+			obj.init.scn_x = x1
+			obj.init.scn_y = y1
+			obj.end.scn_x = x2
+			obj.end.scn_y = y2
+			obj.visible = visible
 
 	def scale(self, sx, sy, sz):
 		for obj in self.lines:
@@ -114,7 +158,9 @@ class Object3D(objects.Object):
 			obj.end.rotate_z(theta)
 
 	def rotate_scn(self, theta, cx, cy):
-		print("do nothing")
+		for obj in self.lines:
+			obj.init.rotate_scn(theta, cx, cy)
+			obj.end.rotate_scn(theta, cx, cy)
 
 
 class MatrixTransform3D:
