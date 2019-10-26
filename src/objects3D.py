@@ -3,6 +3,7 @@ import viewport
 import window
 import clipping
 import numpy as np
+import math
 
 class Point3D(objects.Object):
 
@@ -15,6 +16,7 @@ class Point3D(objects.Object):
 		self.scn_y = y
 		self.scn_z = z
 		self.visible = True
+		self.projected = False
 
 
 	def reset_scn(self):
@@ -50,24 +52,80 @@ class Point3D(objects.Object):
 		self.z = rotated_matrix[2]
 
 	# fazer depois... ou não rs
-	def rotateArbitraryPoint(self, theta, x, y, z):
-		tx = self.x
-		ty = self.y
-		tz = self.z
+	def rotateArbitraryAxis(self, theta, cx, cy, cz):
 
-		# tr_inv =  np.array((
-		# 				[ 1 ,  0 , 0, 0],
-		# 				[ 0 ,  1 , 0, 0],
-		# 				[ 0 ,  0 , 1, 0],
-		# 				[-tx, -ty, -tz, 1]), dtype = float)
-		# tr =  np.array((
-		# 				[ 1 ,  0 , 0, 0],
-		# 				[ 0 ,  1 , 0, 0],
-		# 				[ 0 ,  0 , 1, 0],
-		# 				[ tx, ty, tz, 1]), dtype = float)
+		cy_2 = cy*cy
+		cz_2 = cz*cz
+		d = math.sqrt(cy_2 + cz_2)
 
-		# aux_matrix = np.dot(point_matrix, tr_inv)
-		# aux_matrix = MatrixTransform3D.rotate_x(theta, )
+		sin_a = cy/d
+		cos_a = cz/d
+
+		sin_b = cx
+		cos_b = d
+
+		sin = np.sin(theta) 
+		cos = np.cos(theta)
+
+		r_a = np.array(([1, 0, 0, 0],
+						[0, cos_a, sin_a, 0],
+						[0, -sin_a, cos_a, 0],
+						[0 , 0, 0, 1]), dtype = float)
+
+		r_ainv = np.array(([1, 0, 0, 0],
+						[0, cos_a, -sin_a, 0],
+						[0, sin_a, cos_a, 0],
+						[0 , 0, 0, 1]), dtype = float)
+
+		r_b = np.array(([cos_b, 0, sin_b, 0],
+						[0, 1, 0, 0],
+						[-sin_b, 0, cos_b, 0],
+						[0, 0, 0, 1]), dtype = float)
+
+		r_binv = np.array(([cos_b, 0, -sin_b, 0],
+						[0, 1, 0, 0],
+						[sin_b, 0, cos_b, 0],
+						[0, 0, 0, 1]), dtype = float)
+
+		r = np.array(([cos, sin, 0, 0],
+						[-sin, cos, 0, 0],
+						[0, 0, 1, 0],
+						[0, 0, 0, 1]), dtype = float)
+
+		tx = float(self.x)
+		ty = float(self.y)
+		tz = float(self.z)
+		tr_inv =  np.array((
+						[ 1 ,  0 , 0, 0],
+						[ 0 ,  1 , 0, 0],
+						[ 0 ,  0 , 1, 0],
+						[-tx, -ty, -tz, 1]), dtype = float)
+		tr =  np.array((
+						[ 1 ,  0 , 0, 0],
+						[ 0 ,  1 , 0, 0],
+						[ 0 ,  0 , 1, 0],
+						[ tx, ty, tz, 1]), dtype = float)
+
+		#point_matrix = np.array(([tx, ty, tz, 1]), dtype = float)
+
+		#aux_matrix = np.dot(point_matrix, tr_inv)
+		#aux_matrix = np.dot(aux_matrix, r_a)
+		aux_matrix = np.dot(tr_inv, r_a) # ver se ta certo
+		aux_matrix = np.dot(aux_matrix, r_b)
+		aux_matrix = np.dot(aux_matrix, r)
+		aux_matrix = np.dot(aux_matrix, r_binv)
+		aux_matrix = np.dot(aux_matrix, r_ainv)
+		aux_matrix = np.dot(aux_matrix, tr)
+
+		self.x = aux_matrix[3][0]
+		self.y = aux_matrix[3][1]
+		self.z = aux_matrix[3][2]
+
+		# self.x = aux_matrix[0]
+		# self.y = aux_matrix[1]
+		# self.z = aux_matrix[2]
+
+		
 
 
 	def rotate_scn(self, theta, cx, cy):
@@ -80,6 +138,20 @@ class Point3D(objects.Object):
 	def clip_point(self, window: window.Window):
 		clip = clipping.Clipping()
 		self.visible = clip.point_clipping(self.scn_x, self.scn_y, window)
+
+
+	def project(self, d):
+		#if self.projected == False:
+		x = float(self.x)
+		y = float(self.y)
+		z = float(self.z)
+		
+		dz = z/d
+		self.scn_x = (x/dz)
+		self.scn_y = (y/dz)
+		self.scn_z = (d)
+		#	self.projected = True
+		
 
 
 # lines as list of tuples of 3dpoints?
@@ -141,6 +213,11 @@ class Object3D(objects.Object):
 			obj.init.traverse(dx, dy, dz)
 			obj.end.traverse(dx, dy, dz)
 
+	def rotateArbitraryAxis(self, theta, cx, cy, cz):
+		for obj in self.lines:
+			obj.init.rotateArbitraryAxis(theta, cx, cy, cz)
+			obj.end.rotateArbitraryAxis(theta, cx, cy, cz)
+
 	def rotate_x(self, theta):
 		for obj in self.lines:
 			obj.init.rotate_x(theta)
@@ -162,6 +239,10 @@ class Object3D(objects.Object):
 			obj.init.rotate_scn(theta, cx, cy)
 			obj.end.rotate_scn(theta, cx, cy)
 
+	def project(self, distance):
+		for obj in self.lines:
+			obj.init.project(distance)
+			obj.end.project(distance)
 
 class MatrixTransform3D:
 

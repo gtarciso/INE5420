@@ -665,7 +665,7 @@
           </object>
           <packing>
             <property name="x">810</property>
-            <property name="y">450</property>
+            <property name="y">350</property>
           </packing>
         </child>
         <child>
@@ -678,7 +678,7 @@
           </object>
           <packing>
             <property name="x">830</property>
-            <property name="y">480</property>
+            <property name="y">380</property>
           </packing>
         </child>
         <child>
@@ -691,7 +691,7 @@
           </object>
           <packing>
             <property name="x">900</property>
-            <property name="y">480</property>
+            <property name="y">380</property>
           </packing>
         </child>
         <child>
@@ -706,7 +706,7 @@
           </object>
           <packing>
             <property name="x">830</property>
-            <property name="y">520</property>
+            <property name="y">420</property>
           </packing>
         </child>
         <child>
@@ -721,7 +721,7 @@
           </object>
           <packing>
             <property name="x">900</property>
-            <property name="y">520</property>
+            <property name="y">420</property>
           </packing>
         </child>
         <child>
@@ -736,7 +736,265 @@
           </object>
           <packing>
             <property name="x">970</property>
-            <property name="y">520</property>
+            <property name="y">420</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="z_in_button">
+            <property name="label" translatable="yes">z+</property>
+            <property name="width_request">50</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="z_in_button_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">10</property>
+            <property name="y">320</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="z_out_button">
+            <property name="label" translatable="yes">z-</property>
+            <property name="width_request">50</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="z_out_button_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">10</property>
+            <property name="y">390</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="arbitraty_axis_lb">
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Arbitrary Axis</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">460</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="x0_label">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">x0</property>
+            <property name="max_width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">500</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="xf_label">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">xf</property>
+            <property name="max_width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">935</property>
+            <property name="y">500</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="x0_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">865</property>
+            <property name="y">500</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="xf_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">970</property>
+            <property name="y">500</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="y0_label">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">y0</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">540</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="y0_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">865</property>
+            <property name="y">540</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="yf_label">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">yf</property>
+          </object>
+          <packing>
+            <property name="x">935</property>
+            <property name="y">540</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="yf_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">970</property>
+            <property name="y">540</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="z0_label">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">z0</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">580</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="z0_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">865</property>
+            <property name="y">580</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="zf_label">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">zf</property>
+          </object>
+          <packing>
+            <property name="x">935</property>
+            <property name="y">580</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="zf_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">970</property>
+            <property name="y">580</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="arbitrary_axis_rotate">
+            <property name="label" translatable="yes">Rotate</property>
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="arbitrary_axis_rotate_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">970</property>
+            <property name="y">620</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="angle_arbitrary_label">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Angle</property>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">620</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="arbitrary_axis_entry">
+            <property name="width_request">60</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">0</property>
+          </object>
+          <packing>
+            <property name="x">900</property>
+            <property name="y">620</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="perspective">
+            <property name="label" translatable="yes">Perspective Projection</property>
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
+            <signal name="clicked" handler="perspective_clicked_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">830</property>
+            <property name="y">660</property>
           </packing>
         </child>
       </object>

@@ -283,6 +283,40 @@ class MainWindowHandler:
 		self.darea.queue_draw()
 
 
+
+	def arbitrary_axis_rotate_clicked_cb(self, widget):
+		x0 = float(self.builder.get_object("x0_entry").get_text())
+		xf = float(self.builder.get_object("xf_entry").get_text())
+		y0 = float(self.builder.get_object("y0_entry").get_text())
+		yf = float(self.builder.get_object("yf_entry").get_text())
+		z0 = float(self.builder.get_object("z0_entry").get_text())
+		zf = float(self.builder.get_object("zf_entry").get_text())
+
+		angle = float(self.builder.get_object("arbitrary_axis_entry").get_text())
+		theta = (angle/180)*np.pi
+
+		delta_x = xf - x0
+		delta_y = yf - y0
+		delta_z = zf - z0
+
+		tree_view = self.builder.get_object("list_obj_created")
+		(model, path) = tree_view.get_selection().get_selected_rows()
+
+		obj_id = -1
+		for val in path:
+			it = model.get_iter(path)
+			object_id = int(model.get_value(it, 0))
+
+			for i in range(len(self.saved_objects)):
+				if self.saved_objects[i].object_id == object_id:
+					obj_id = i
+					self.saved_objects[obj_id].rotateArbitraryAxis(theta, delta_x, delta_y, delta_z)
+					self.saved_objects[obj_id].rotate_scn(-self.window.theta, self.window.window_center.x, self.window.window_center.y)
+
+		
+		self.main_window.append_log("Object rotated around arbitrary axis")
+		self.darea.queue_draw()
+
 	def rotate_button_clicked_cb(self, widget):
 
 		angle_entry = float(self.builder.get_object("angle_entry").get_text())
@@ -501,11 +535,16 @@ class MainWindowHandler:
 	def on_rb_ponto_arbitrario_toggled(self, widget):
 		self.rotate_type = RotationType.ARBITRARY
 
+	def perspective_clicked_cb(self, widget):
+		self.darea.queue_draw()
+
 
 # teste, alterar para desenhar objetos
 	def on_viewport_draw(self, widget, cr):
 		x_max = self.main_window.darea.get_allocation().width
 		y_max = self.main_window.darea.get_allocation().height
+
+		pr = self.builder.get_object("perspective")
 
 
 		cr.save()
@@ -554,6 +593,8 @@ class MainWindowHandler:
 
 			elif obj.object_type == "3D Object":
 				obj.rotate_scn(win_theta, self.window.window_center.x, self.window.window_center.y)
+				if pr.get_active():
+					obj.project(0.5)
 				obj.clip_object(self.window)
 				obj.draw_object(cr, self.viewport)
 
@@ -561,6 +602,8 @@ class MainWindowHandler:
 		log_buffer = self.log.get_buffer()
 		it = log_buffer.get_iter_at_offset(-1)
 		log_buffer.insert(it, text + "\n", -1)
+
+
 
 
 

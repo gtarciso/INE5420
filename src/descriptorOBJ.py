@@ -59,8 +59,8 @@ class objectDescriptor():
 						point3 = objects3D.Point3D(x3, y3, z3, object_id, object_name, "3D Object", object_rgb)
 
 						lines.append(objects3D.Line3D(point1, point2))
+						lines.append(objects3D.Line3D(point1, point3))
 						lines.append(objects3D.Line3D(point2, point3))
-						lines.append(objects3D.Line3D(point3, point1))
 
 
 

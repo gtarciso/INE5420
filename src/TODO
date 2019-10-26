@@ -1,3 +1,0 @@
-caso seja necessário usar os valores de Id de objetos já deletados, criar uma lista de Id disponiveis (sempre que excluir um objeto add o Id dele na lista) e sempre verificar se há algum Id disponivel nessa lista quando for atribuir o Id a um objeto (check)
-
-checar se está rotacionando corretamente
